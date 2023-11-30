@@ -1,0 +1,292 @@
+<%- include('../../partials/head') %>
+
+<body class="bg-light">
+  <!-- This is floating menu-1  -->
+  <div id="floating1"
+    class="opacity-0 pointer-events-none h-screen w-full fixed top-0 right-0 flex justify-center items-start bg-black/40 z-40 transition-all duration-75 ease-in">
+  </div>
+  <!-- End of floating menu-1  -->
+
+  <!-- This is success animation modal  -->
+  <div id="success"
+    class="opacity-0 pointer-events-none absolute top-0 right-0 h-screen flex w-full justify-center items-center bg-black/40 z-50 transition-all duration-75 ease-in">
+  </div>
+  <!-- End of success animation modal  -->
+
+  <%- include('../../partials/top-navbar') %>
+  <div class="container-fluid pt-4 px-md-0 p-4">
+    <div class="row">
+      <%- include('../partials/left-sidebar') %>
+      <div class="col-md-7 text-justify">
+        <div class="card card-body">
+          <div class="row">
+            <div class="col-md-12">
+              <span class="h2 d-block">Returned Papers</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col justify-start items-start gap-y-4 py-4 w-full" data-paperListContainer>
+
+          </div>
+
+          <div class="flex justify-start items-start">
+            <button class="bg-stone-600 text-white px-4 py-1.5 hover:bg-black/50 rounded-l focus:outline-none"
+              data-prevBtn>Newer</button>
+            <button class="bg-stone-500 text-white px-4 py-1.5 hover:bg-black/50 rounded-r focus:outline-none"
+              data-nextBtn>Older</button>
+          </div>
+        </div>
+      </div>
+      <%- include('../../partials/right-sidebar') %>
+    </div>
+  </div>
+
+  <script type="module">
+    import { showSuccessMenu, showSuccessMessage, showErrorMessage } from "/js/floating-success-menu.js";
+    const paperListContainer = document.querySelector('[data-paperListContainer]');
+    const prevBtn = document.querySelector('[data-prevBtn]');
+    const nextBtn = document.querySelector('[data-nextBtn]');
+
+    /* Pagination System */
+    prevBtn.addEventListener('click', () => {
+      if (page > 0) {
+        window.scrollTo(0, 0);
+        page--;
+        renderPaper();
+      }
+    });
+    nextBtn.addEventListener('click', () => {
+      if (page < totalPage - 1) {
+        window.scrollTo(0, 0);
+        page++;
+        renderPaper();
+      }
+    });
+    var data = [], page = 0, limit = 20, total = 0, totalPage = 0;
+    paperListContainer.innerHTML = `
+        <div class="w-full h-16 flex justify-center items-center">
+          <div class="spinner-border text-primary" role="status"></div>
+        </div>
+      `;
+
+    function floating1HTML(reviewerList) {
+      return `<div class="bg-white w-1/2 py-3 rounded relative mt-10 ">
+        <div class="flex justify-between items-center px-3 pb-3 border-b border-gray-300">
+          <span class="text-2xl font-medium">Reviewer List</span>
+          <button class="btn btn-light" data-close-btn aria-colindex="1"><i class="fa-sharp fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="px-3 max-h-96 overflow-auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Reviewer Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody id="reviewer">
+              ${reviewerList}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="px-3 flex justify-end items-center border-t border-gray-300 mt-4 pt-3">
+          <button class="btn btn-danger" data-close-btn aria-colindex="1">Close</button>
+        </div>
+      </div>`;
+    }
+
+
+
+    function renderPaper() {
+      paperListContainer.innerHTML = '';
+      // var renderableData = data.slice(page * limit, (page + 1) * limit);
+      var renderableData = [...data];
+      if (renderableData.length == 0) {
+        return paperListContainer.innerHTML = `
+            <div class="w-full h-16 flex justify-center items-center">
+              <span class="text-xl font-semibold">No paper found</span>
+            </div>
+          `;
+      }
+
+      renderableData.forEach(item => {
+        const paperList = document.createElement('div');
+        paperList.classList.add("bg-light", "border", "border-gray-300", "px-3", "py-2", "flex", "flex-col", "justify-start", "items-start", "w-full", "rounded-sm");
+        paperList.innerHTML = `
+            <h1 class="text-xl">${item.title}</h1>
+            <h3 class="text-xl font-extralight">${item.paper_author}</h3>
+            <div class="bg-dark text-white text-sm font-semibold my-2 px-2 py-1 rounded">Paper ID: ${item.paper_id}</div>
+            <div class="btn-group w-full" role="group" aria-label="Basic example">
+              <a href="/uploads/papers/${item.file_url}" download role="button" type="button" class="btn bg-sky-600 hover:bg-sky-700 transition-all duration-150 ease-in text-white/90 hover:text-white"><i class="fa-solid fa-download"></i> <span class="hidden lg:inline-block ml-1"> Download File</span></a>
+              <a href="/uploads/papers/${item.file_url}" target="_blank" role="button" type="button" class="btn bg-yellow-500 hover:bg-yellow-600 transition-all duration-150 ease-in text-yellow-900"><i class="fa-solid fa-eye"></i> <span class="hidden lg:inline-block ml-1"> View File</span></a>
+              <button type="button" class="btn bg-success text-white/90 hover:text-white" data-assign-reviewer-btn aria-colindex="1" aria-label="${item.paper_id}"><i class="fa-solid fa-user-plus"></i><span class="hidden lg:inline-block ml-1"> Assign Reviewer</span></button>
+              <button class="btn bg-danger text-white/90 hover:text-white" data-paper_id="${item.paper_id}" data-delete-btn><i class="fa-solid fa-trash"></i> <span class="hidden lg:block">Delete</span></button>
+            </div>
+          `;
+        paperListContainer.appendChild(paperList);
+      });
+
+      const deleteBtns = document.querySelectorAll('[data-delete-btn]');
+      deleteBtns.forEach((item) => {
+        item.addEventListener('click', (e) => {
+          const paper_id = item.getAttribute('data-paper_id');
+          const confirm = window.confirm('Are you sure to delete?');
+
+          if (confirm) {
+            fetch(`/api/admin/paper/delete`, {
+              method: "DELETE",
+              headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: JSON.stringify({
+                paper_id: paper_id
+              })
+            }).then(res => res.json())
+              .then(res => {
+                if (res.success) {
+
+                  showSuccessMenu();
+                  showSuccessMessage('Deleted Successfully');
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 2000);
+                } else {
+
+                  showErrorMessage(res.message);
+                }
+              })
+          } else {
+            return;
+          }
+        })
+      })
+
+      /* Assign Reviewer Buttom Click Event */
+      const assignReviewerBtns = document.querySelectorAll('[data-assign-reviewer-btn]');
+      assignReviewerBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const paperId = btn.getAttribute('aria-label');
+          const floatingMenu = document.querySelector('#floating1');
+          floatingMenu.classList.remove('opacity-0', 'pointer-events-none');
+          floatingMenu.classList.add('opacity-100', 'pointer-events-auto');
+          floatingMenu.setAttribute('data-paper-id', paperId);
+
+          /* Set spinner loader to the modal */
+          floatingMenu.innerHTML = `
+              <div class="bg-white w-1/2 py-3 rounded relative mt-10 ">
+                <div class="flex justify-between items-center px-3 pb-3 border-b border-gray-300">
+                  <span class="text-2xl font-medium">Reviewer List</span>
+                  <button class="btn btn-light" data-close-btn aria-colindex="1"><i class="fa-sharp fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="px-3 max-h-96 overflow-auto">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Reviewer Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="reviewer">
+                      <tr>
+                        <td colspan="3" class="text-center">
+                          <div class="spinner-border text-primary mt-4" role="status"></div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="px-3 flex justify-end items-center border-t border-gray-300 mt-4 pt-3">
+                  <button class="btn btn-danger" data-close-btn aria-colindex="1">Close</button>
+                </div>
+              </div>
+            `;
+
+          /* Close floating menu */
+          const closeBtns = document.querySelectorAll('[data-close-btn]');
+          closeBtns.forEach((item) => {
+            item.addEventListener('click', () => {
+              floatingMenu.classList.remove('opacity-100', 'pointer-events-auto');
+              floatingMenu.classList.add('opacity-0', 'pointer-events-none');
+            });
+          });
+
+          var reviewerList = '';
+
+          fetch(`/api/reviewer_list?paper_id=${paperId}`)
+            .then((res) => res.json())
+            .then((res) => {
+              res.forEach(item => {
+                reviewerList += `
+                    <tr>
+                      <td>${item.first_name} ${item.middle_name} ${item.last_name}</td>
+                      <td>${item.email}</td>
+                      <td><button class="btn btn-success" data-assign-btn aria-label="${item.email}" aria-details="${paperId}" ${item.isAssigned ? 'disabled' : ''} aria-description="${item.id}">${item.isAssigned ? 'Assigned' : 'Assign'}</button></td>
+                    </tr>
+                  `;
+              });
+
+              floatingMenu.innerHTML = floating1HTML(reviewerList);
+
+              /* Again Close floating menu */
+              const closeBtns = document.querySelectorAll('[data-close-btn]');
+              closeBtns.forEach((item) => {
+                item.addEventListener('click', () => {
+                  floatingMenu.classList.remove('opacity-100', 'pointer-events-auto');
+                  floatingMenu.classList.add('opacity-0', 'pointer-events-none');
+                });
+              });
+              /* Add event listener to assign button */
+              const assignBtns = document.querySelectorAll('[data-assign-btn]');
+              assignBtns.forEach(item => {
+                item.addEventListener('click', (e) => {
+                  item.disabled = true;
+                  const email = item.getAttribute('aria-label');
+                  const paperId = item.getAttribute('aria-details');
+                  const reviewerId = item.getAttribute('aria-description');
+                  fetch('/api/assign_reviewer', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      email,
+                      paperId,
+                      reviewerId
+                    })
+                  })
+                    .then((res) => res.json())
+                    .then((res) => {
+                      if (res.success) {
+                        item.textContent = `Assigned`;
+                      }
+                    })
+                })
+              })
+            })
+        });
+      });
+    }
+    fetch('/admin_panel/returned_paper/list')
+      .then((res) => res.json())
+      .then(dd => {
+        data = dd;
+        total = data.length;
+        totalPage = Math.ceil(total / limit);
+        renderPaper();
+      });
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="/js/bootstrap.js"></script>
+  <script src="/js/app.js"></script>
+
+</body>
+
+</html>

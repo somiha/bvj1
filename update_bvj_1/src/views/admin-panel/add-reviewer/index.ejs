@@ -1,0 +1,239 @@
+<%- include('../../partials/head') %>
+  <body class="bg-light">
+    <!-- This is success animation modal  -->
+    <div id="success" class="opacity-0 pointer-events-none fixed top-0 right-0 h-screen flex w-full justify-center items-center bg-black/40 z-50 transition-all duration-75 ease-in">
+      
+    </div>
+    <!-- End of success animation modal  -->
+    <%- include('../../partials/top-navbar') %> 
+    <div class="container-fluid pt-4 px-md-0 p-4">
+      <div class="row">
+        <%- include('../partials/left-sidebar') %> 
+        <div class="col-md-7 text-justify">
+          <div class="card card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <span class="h2 d-block">Add Reviewer</span>
+              </div>
+            </div>
+            <div>
+              <div class="form-group pt-3">
+                <label for="name"> Name </label>
+                <div class="w-full flex justify-between items-center gap-4">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="first_name"
+                    name="first_name"
+                    required
+                    placeholder="First Name*"
+                    data-form
+                  />
+                <input
+                  type="text"
+                  class="form-control"
+                  id="middle_name"
+                  name="middle_name"
+                  placeholder="Middle Name"
+                  data-form
+                />
+                <input
+                  type="text"
+                  class="form-control"
+                  id="last_name"
+                  name="last_name"
+                  required
+                  placeholder="Last Name*"
+                  data-form
+                />
+                </div>
+                <div class="px-1 py-1 text-danger d-none" data-errmsg data-first_name aria-label="First Name">
+                  First Name is required
+                </div>
+                <div class="px-1 text-danger d-none" data-errmsg data-last_name aria-label="Last Name">
+                  Last Name is required
+                </div>
+              </div>
+
+
+              <div class="form-group">
+                <label for="name"> E-mail Address: </label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  required
+                  placeholder="Enter Author Email*"
+                  data-form
+                />
+                <div class="px-1 py-1 text-danger d-none" data-errmsg data-email aria-label="Email">
+                  Email is required
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="name"> Password: </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  required
+                  placeholder="Enter Author Password*"
+                  data-form
+                />
+                <div class="px-1 py-1 text-danger d-none" data-errmsg data-password aria-label="Password">
+                  Password is required
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="name"> Affiliation: </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="affiliation"
+                  name="affiliation"
+                  placeholder="Enter Affiliation"
+                  data-form
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="typeSelect"> Country </label>
+                <select class="custom-select mr-sm-2" id="typeSelect" name="country" required data-form>
+                  <option value="" selected>
+                    Select Country*
+                  </option>
+                  <% countryList.map(item => { %>
+                    <option value="<%- item %>"><%- item %></option>
+                  <% }) %>
+                </select>
+                <div class="px-1 py-1 text-danger d-none" data-errmsg data-country aria-label="Country">
+                  Country is required
+                </div>
+              </div>
+
+              <div class="text-center pb-4" id="nextAuthors"> 
+                <button
+                  class="btn btn-primary px-4" data-submit
+                >
+                  Add Reviewer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <%- include('../../partials/right-sidebar') %> 
+      </div>
+    </div>
+    <script src="/js/floating-success-menu.js" type="module"></script>
+    <script type="module">
+      const successModal = document.getElementById('success');
+      const successMsg = document.querySelector('.message');
+      import { showSuccessMenu, showSuccessMessage, showErrorMessage } from "/js/floating-success-menu.js";
+
+      //validation
+      const validateForm = () => {
+        const formFields = document.querySelectorAll('[required]');
+        const errMsgs = document.querySelectorAll('[data-errmsg]');
+        let isValid = true;
+        formFields.forEach((field) => {
+          if (field.value === '') {
+            isValid = false;
+            field.classList.add('border', 'border-danger');
+          } else {
+            field.classList.remove('border', 'border-danger');
+          }
+        });
+        errMsgs.forEach((msg) => {
+          if (msg.getAttribute('aria-label') === 'First Name') {
+            if (document.getElementById('first_name').value === '') {
+              msg.classList.remove('d-none');
+            } else {
+              msg.classList.add('d-none');
+            }
+          }
+          if (msg.getAttribute('aria-label') === 'Last Name') {
+            if (document.getElementById('last_name').value === '') {
+              msg.classList.remove('d-none');
+            } else {
+              msg.classList.add('d-none');
+            }
+          }
+          if (msg.getAttribute('aria-label') === 'Email') {
+            if (document.getElementById('email').value === '') {
+              msg.classList.remove('d-none');
+            } else {
+              msg.classList.add('d-none');
+            }
+          }
+          if (msg.getAttribute('aria-label') === 'Password') {
+            if (document.getElementById('password').value === '') {
+              msg.classList.remove('d-none');
+            } else {
+              msg.classList.add('d-none');
+            }
+          }
+          if (msg.getAttribute('aria-label') === 'Country') {
+            if (document.getElementById('typeSelect').value === '') {
+              msg.classList.remove('d-none');
+            } else {
+              msg.classList.add('d-none');
+            }
+          }
+        });
+        return isValid;
+      };
+      var formFields = document.querySelectorAll('[data-form]');
+      var form = {};
+      formFields.forEach(function (field) {
+        field.addEventListener('change', function (e) {
+          form[e.target.name] = e.target.value;
+        });
+      });
+      const submitBtn = document.querySelector('[data-submit]');
+      submitBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (!validateForm()) {
+          return;
+        }
+        fetch('/admin_panel/add_reviewer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+          },
+          body: JSON.stringify(form),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              showSuccessMenu();
+              showSuccessMessage(data.message);
+              setTimeout(() => {
+                window.location.reload();
+              }, 2000);
+            } else {
+              showSuccessMenu();
+              showErrorMessage(data.message);
+            }
+          });
+      });
+    </script>
+
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

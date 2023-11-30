@@ -1,0 +1,693 @@
+<%- include('../../partials/head') %>
+  <body class="bg-light">
+    <!-- This is success animation modal  -->
+    <div id="success" class="opacity-0 pointer-events-none fixed top-0 right-0 h-screen flex w-full justify-center items-center bg-black/40 z-50 transition-all duration-75 ease-in">
+    </div>
+    <!-- End of success animation modal  -->
+    <%- include('../../partials/top-navbar') %> 
+    <div class="container-fluid pt-4 px-md-0 p-4">
+      <div class="row">
+        <%- include('../partials/left-sidebar') %> 
+        <div class="col-md-7 text-justify">
+          
+          <!-- Search Article -->
+          <div class="card card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <span class="h2 d-block">Search Article</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col justify-between items-center mt-3">
+              <div class="w-full">
+                <label for="">Paper ID:</label>
+              </div>
+              <input
+                  type="text"
+                  class="form-control"
+                  id="paper_id_input"
+                  required
+                  placeholder="Paper ID*"
+                  value="<%- paper_data.id %>"
+                />
+                <button class="btn btn-outline-primary px-3 mt-4" data-paperSearchBtn>Search Paper</button>
+            </div>
+
+            <div class="hidden w-full justify-center items-center mt-6" data-paperSearchLoader>
+              <div class="spinner-grow text-primary" role="status"></div>
+            </div>
+
+            <div class="hidden" data-paperNotFound>
+              <div class="w-full flex justify-center items-center mt-6">
+                <span class="text-gray-500 font-semibold text-2xl">No Paper Found</span>
+              </div>
+            </div>
+          </div>
+          <!--/ Search Article -->
+
+          <!-- Alert shows here -->
+          <div class="alert alert-success hidden" role="alert"></div>
+          <div class="alert alert-danger hidden" role="alert"></div>
+          <!--/ Alert shows here -->
+
+            <div class="<%- paper_data.id ? '' : 'hidden' %>" data-paperInfoContainer>
+              <!-- Update Paper Info-->
+              <div class="card card-body mt-4">
+                <div class="row">
+                  <div class="col-md-12">
+                    <span class="h2 d-block">Update Paper Info</span>
+                  </div>
+                </div>
+                <div class="form-group pt-3">
+                  <label for="name"> Paper ID* </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="paper_id"
+                    name="paper_id"
+                    readonly
+                    placeholder="ID of your Article"
+                    value="<%- paper_data.id %>"
+                  />
+                </div>
+  
+                <div class="form-group">
+                  <label for="typeSelect"> Volume </label>
+                  <select class="custom-select mr-sm-2" id="volumeSelect" name="volume" required data-update-paper-info>
+                    <% volumes.forEach((item, index) => { %>
+                      <option value="<%- item.id %>" <%- item.id === paper_data.volume ? 'selected' : '' %>><%- item.title %></option>
+                    <% }) %>
+                  </select>
+                </div>
+  
+                <div class="form-group pt-3">
+                  <label for="name"> Pages </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    required
+                    name="page"
+                    placeholder="Page range in journal"
+                    data-update-paper-info
+                    value="<%- paper_data.page %>"
+                  />
+                </div>
+  
+                <div class="form-group">
+                  <label for="typeSelect"> Type* </label>
+                  <select class="custom-select mr-sm-2" id="typesSelect" name="type" required data-update-paper-info>
+                    <% types.map(item => { %>
+                      <option value="<%- item.id %>" <%- item.id === paper_data.type ? 'selected' : '' %>><%- item.type %></option>
+                    <% }) %>
+                  </select>
+                </div>
+  
+                <div class="form-group pt-3">
+                  <label for="name"> Title* </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="title"
+                    required
+                    placeholder="Title of your Article"
+                    data-update-paper-info
+                    value="<%- paper_data.title %>"
+                  />
+                </div>
+  
+                <div class="form-group pt-3">
+                  <label for="name"> Abstract* </label>
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="abstract"
+                    required
+                    rows="6"
+                    data-update-paper-info
+                    placeholder="Abstract of your Article"
+                    ><%- paper_data.abstract %></textarea>
+                </div>
+  
+                <div class="form-group pt-3">
+                  <label for="name"> Enter Keywords* </label>
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="keywords"
+                    required
+                    rows="4"
+                    placeholder="Ex. - key1, key2, key3"
+                    data-update-paper-info
+                    ><%- paper_data.keywords %>
+                  </textarea>
+                </div>
+  
+                <div class="text-center pb-4 mt-2 mb-4" id="nextAuthors"> 
+                  <button
+                    class="btn btn-primary px-4"
+                    data-UpdatePaperInfoBtn
+                  >
+                  <div class="spinner-border text-primary spinner-border-sm hidden" role="status" id="update-paper-info-spinner"></div>
+                    Update Paper Info
+                  </button>
+                </div>
+              </div>
+              <!--/ Update Paper Info-->
+
+
+              <!-- Update Author Info-->
+              <div class="card card-body mt-4">
+                <div class="row">
+                  <div class="col-md-12">
+                    <span class="h2 d-block">Update Author Info</span>
+                  </div>
+                </div>
+
+                <!-- Added authors list  -->
+            <div class="card <%- authors.length === 0 ? 'hidden' : '' %> my-2" data-addedAuthor>
+              <div class="card-header">
+                <h5 class="h5">Added Authors</h5>
+              </div>
+              <div class="card-body" id="added-author-list">
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <strong>Full Name</strong>
+                  </div>
+                  <div class="col-4">
+                    <strong>Email</strong>
+                  </div>
+                  <div class="col-4">
+                    <strong>Action</strong>
+                  </div>
+                </div>
+
+                <% authors.forEach((item) => { %>
+                  <div class="row mb-2" data-authorList>
+                    <div class="col-4">
+                      <span data-full_name><%- item.first_name %> <%- item.middle_name %> <%- item.last_name %></span>
+                    </div>
+                    <div class="col-4">
+                      <span data-email><%- item.email %></span>
+                    </div>
+                    <div class="col-4">
+                      <button class="btn btn-danger" data-paper_id="<%- item.paper_id %>" data-author_id="<%- item.id %>" data-deleteBtn>Delete</button>
+                    </div>
+                  </div>
+                <% }) %>
+
+                <script>
+                  // Delete Author
+                  const deleteAuthor = () => {
+                    const deleteAuthorBtn = document.querySelectorAll('[data-deleteBtn]');
+                    deleteAuthorBtn.forEach((item) => {
+                      item.addEventListener('click', (e) => {
+                        const paper_id = item.getAttribute('data-paper_id');
+                        const author_id = item.getAttribute('data-author_id');
+                        fetch('/api/paper/delete_author', {
+                          method: 'DELETE',
+                          headers: {
+                            'Content-Type': 'application/json'
+                          },
+                          body: JSON.stringify({
+                            paper_id,
+                            author_id
+                          })
+                        }).then(res => {
+                          return res.json();
+                        })
+                          .then(res => {
+                            window.location.reload();
+                            deleteAuthor();
+                          })
+                      })
+                    })
+                  }
+                  deleteAuthor();
+                </script>
+              </div>
+            </div>
+            <!--/ Added authors list  -->
+
+
+                <div class="w-full flex justify-center items-center">
+                  <span class="text-gray-500 font-semibold text-2xl">--Add Manually--</span>
+                </div>
+                <div class="form-group pt-3">
+                  <label for="name"> Name* </label>
+                  <div class="w-full flex justify-between items-center gap-4">
+                    <input
+                    type="text"
+                    class="form-control"
+                    id="first_name"
+                    name="first_name"
+                    required
+                    placeholder="First Name*"
+                  />
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="middle_name"
+                    name="middle_name"
+                    required
+                    placeholder="Middle Name"
+                  />
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="last_name"
+                    name="last_name"
+                    required
+                    placeholder="Last Name*"
+                  />
+                  </div>
+                </div>
+                <div class="form-group pt-3">
+                  <label for="name"> Affiliation* </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="affiliation"
+                    name="affiliation"
+                    required
+                    placeholder="Enter Affiliation"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="countrySelect"> Country </label>
+                  <select class="custom-select mr-sm-2" id="countrySelect" name="country" required>
+                    <option value="" selected>
+                      Select Country
+                    </option>
+                    <% countryList.map(item => { %>
+                      <option value="<%- item %>"><%- item %></option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="form-group pt-3">
+                  <label for="name"> E-mail Address* </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    required
+                    placeholder="Enter Author Email"
+                  />
+                </div>
+                <div class="">
+                  <input
+                    type="checkbox" />
+                  <label for="name" name="is_corresponding"> Corresponding Author </label>
+                </div>
+                <div class="text-center pb-4 mt-2" id="nextAuthors"> 
+                  <button
+                    class="btn btn-primary px-4"
+                    data-addAuthorBtn
+                  > 
+                    <div class="spinner-border text-primary spinner-border-sm hidden" role="status" id="add-author-spinner"></div>
+                    Add Author
+                  </button>
+                </div>
+                <div class="w-full flex justify-center items-center">
+                  <span class="text-gray-500 font-semibold text-2xl">--Search and Add--</span>
+                </div>
+                <div class="form-group pt-3">
+                  <label for="name"> E-mail Address* </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="search_email"
+                    name="search_email"
+                    required
+                    placeholder="Enter Author Email"
+                  />
+                </div>
+                <div class="text-center pb-4 mt-4" id="nextAuthors"> 
+                  <button
+                    class="btn btn-outline-primary px-4"
+                    data-searchAddAuthor
+                  > 
+                  <div class="spinner-border text-primary spinner-border-sm hidden" role="status" id="search-author-spinner"></div>
+                    Search and Add Author
+                  </button>
+                </div>
+              </div>
+              <!--/ Update Author Info-->
+
+              <!-- Update File-->
+              <div class="card card-body mt-4">
+                <div class="container mt-4">
+                  <span class="h2 d-block pb-3"> Update File (DOC/DOCX/TEX)</span>
+                  <form>
+                      <div class="input-group mb-3">
+                          <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="inputGroupFile02" accept=".pdf, .docx, .doc, .tex">
+                            <label class="custom-file-label" for="inputGroupFile02">Choose file</label>s
+                          </div>
+                        </div>
+                    <div class="text-center pb-4">
+                      <button class="btn btn-primary px-4" id="uploadBtn">
+                        Upload
+                      </button>
+                    </div>
+                    <div class="progress hidden" data-progressBar>
+                      <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
+                    <div class="hidden text-gray-700" data-progressBar data-responsive>Uploading...</div>
+                  </form>
+                </div>
+              </div>
+              <!--/ Update File-->
+          </div>
+        </div>
+        <%- include('../../partials/right-sidebar') %> 
+      </div>
+    </div>
+
+    <script src="/js/floating-success-menu.js" type="module"></script>
+    <script type="module">
+      import { showSuccessMenu, showSuccessMessage, showErrorMessage } from "/js/floating-success-menu.js";
+      var data = [];
+      const paperIdInput = document.querySelector('#paper_id_input');
+      const paperSearchBtn = document.querySelector('[data-paperSearchBtn]');
+      const paperSearchLoader = document.querySelector('[data-paperSearchLoader]');
+      const paperInfoContainer = document.querySelector('[data-paperInfoContainer]');
+      const paperNotFound = document.querySelector('[data-paperNotFound]');
+
+      const updatedPaperInfos = document.querySelectorAll('[data-update-paper-info]');
+      const updatePaperInfoBtn = document.querySelector('[data-UpdatePaperInfoBtn]');
+
+      paperSearchBtn.addEventListener('click', () => {
+        paperSearchLoader.classList.replace('hidden', 'flex');
+        paperInfoContainer.classList.add('hidden');
+        paperNotFound.classList.add('hidden');
+        searchPaper();
+      });
+
+      /* -- Update Paper Info part -- */
+      function populateData(){
+        const paper_id = document.querySelector('[name="paper_id"]');
+        const page = document.querySelector('[name="page"]');
+        const title = document.querySelector('[name="title"]');
+        const abstract = document.querySelector('[name="abstract"]');
+        const keywords = document.querySelector('[name="keywords"]');
+        const volumeOptions = document.querySelectorAll('select#volumeSelect option');
+        const typeOptions = document.querySelectorAll('select#typesSelect option');
+
+        paper_id.value = data.paper_id;
+        page.value = data.page;
+        title.value = data.title;
+        abstract.value = data.abstract;
+        keywords.value = data.keywords;
+        
+        volumeOptions.forEach(item => {
+          if(parseInt(item.value) === parseInt(data.volume))
+            item.setAttribute('selected', true);
+        })
+
+        typeOptions.forEach(item => {
+          if(parseInt(item.value) === data.type)
+            item.setAttribute('selected', true);
+        })
+      }
+
+      var paperInfoUpdated = {}, is_changed = false;
+      updatedPaperInfos.forEach((item) => {
+        item.addEventListener('change', (e) => {
+          is_changed = true;
+          const name = e.target.name;
+          const value = e.target.value;
+          paperInfoUpdated[name] = value;
+        })
+      })
+
+      updatePaperInfoBtn.addEventListener('click', (e) => {
+        if(is_changed){
+          const spinner = document.querySelector('#update-paper-info-spinner');
+          spinner.classList.remove('hidden');
+          fetch(`/api/update_article/paper_info`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              paper_id: paperIdInput.value,
+              values: paperInfoUpdated
+            })
+          })
+            .then(res => res.json())
+            .then(res => {
+              spinner.classList.add('hidden');
+              if(res.success){
+                showSuccessMenu();
+                showSuccessMessage('Paper Info Updated Successfully');
+                is_changed = false;
+                paperInfoUpdated = {};
+              } else {
+                showSuccessMenu();
+                showErrorMessage('Something went wrong');
+              }
+            });
+        } else {
+          alert('No changes made');
+        }
+      })
+
+
+      function searchPaper(){
+        location.href = `?paper_id=${paperIdInput.value}`;
+      }
+
+      /* Author Info */
+      const addAuthorBtn = document.querySelector('[data-addAuthorBtn]');
+
+      addAuthorBtn.addEventListener('click', (e) => {
+        const paper_id = paperIdInput.value,
+            first_name = document.querySelector('[name="first_name"]').value,
+            middle_name = document.querySelector('[name="middle_name"]').value,
+            last_name = document.querySelector('[name="last_name"]').value,
+            email = document.querySelector('[name="email"]').value,
+            country = document.querySelector('[name="country"]').value,
+            affiliation = document.querySelector('[name="affiliation"]').value,
+            is_corresponding = document.querySelector('[name="is_corresponding"]').checked;
+
+        if(paper_id.length === 0 || first_name.length === 0 || 
+           last_name.length === 0 || email.length === 0 || country.length === 0 ){
+          alert('Please fill Author Fields');
+          return;
+        }
+
+        fetch('/api/update_article/author', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+          },
+          body: JSON.stringify({
+            paper_id, first_name, middle_name, last_name, email, country, is_corresponding, affiliation
+          })
+        }).then(res => res.json())
+          .then(res => {
+            if(res.success){
+              showSuccessMenu();
+              showSuccessMessage('Author Added Successfully');
+              document.querySelector('[name="first_name"]').value = '';
+              document.querySelector('[name="middle_name"]').value = '';
+              document.querySelector('[name="last_name"]').value = '';
+              document.querySelector('[name="email"]').value = '';
+              document.querySelector('[name="country"]').value = '';
+              document.querySelector('[name="affiliation"]').value = '';
+              document.querySelector('[name="is_corresponding"]').checked = false;
+
+              /* RELOAD: to load author list */
+              setTimeout(() => {
+                window.location.reload();
+              }, 1500);
+
+              const deleteAuthor = () => {
+                const deleteAuthorBtn = document.querySelectorAll('[data-deleteBtn]');
+                deleteAuthorBtn.forEach((item) => {
+                  item.addEventListener('click', (e) => {
+                    const paper_id = item.getAttribute('data-paper_id');
+                    const author_id = item.getAttribute('data-author_id');
+                    fetch('/api/paper/delete_author', {
+                      method: 'DELETE',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        paper_id,
+                        author_id
+                      })
+                    }).then(res => res.json())
+                      .then(res => {
+                        window.location.reload();
+                        deleteAuthor();
+                      })
+                  })
+                })
+              }
+              deleteAuthor();
+
+              addAuthorBtn.removeAttribute('disabled');
+              if(res.success){
+                const alert = document.querySelector('.alert-success');
+                const alert2 = document.querySelector('.alert-danger');
+                alert2.classList.add('hidden');
+
+                alert.innerHTML = `<strong>Success!</strong> ${res.message}`;
+                alert.classList.remove('hidden');
+              } else {
+                const alert = document.querySelector('.alert-danger');
+                const alert2 = document.querySelector('.alert-success');
+                alert2.classList.add('hidden');
+                
+                alert.innerHTML = `<strong>Error!</strong> ${res.message}`;
+                alert.classList.remove('hidden');
+              }
+            } else {
+              showSuccessMenu();
+              showErrorMessage(res.message);
+            }
+          })
+      })
+
+      /* -- Search and Add Author Info part -- */
+      const searchEmail = document.querySelector('[name="search_email"]');
+      const searchAddAuthor = document.querySelector('[data-searchAddAuthor]');
+
+      searchAddAuthor.addEventListener('click', (e) => {
+        if(searchEmail.value.length === 0){
+          alert('Please enter email');
+          return;
+        }
+
+        const searchBtn = document.querySelector('#search-author-spinner');
+        searchBtn.classList.remove('hidden');
+        fetch(`/api/update_article/author/search?q=${searchEmail.value}`)
+          .then(res => res.json())
+          .then(res => {
+            searchBtn.classList.add('hidden');
+            if(res.success){
+              showSuccessMenu();
+              showSuccessMessage('Author Added Successfully');
+            } else {
+              showSuccessMenu();
+              showErrorMessage('Author Not Found');
+            }
+          })
+      })
+
+      /* Upload File Section */
+      const fileInput = document.querySelector('#inputGroupFile02');
+      const fileLabel = document.querySelector('[for="inputGroupFile02"]');
+      const uploadBtn = document.querySelector('#uploadBtn');
+      const progressBar = document.querySelectorAll('[data-progressBar]');
+      const progressedBar = document.querySelector('.progress-bar');
+      const responsive = document.querySelector('[data-responsive]'); //for dynamic uploading text
+
+      fileInput.addEventListener('change', (e) => {
+        const {
+          name,
+          size
+        } = e.target.files[0];
+        if(name.length == 0 ) {
+          fileLabel.textContent = 'Choose File';
+        } else {
+          var fileSize = (size / 1024) < 1024 ? `${parseFloat(size / 1024).toFixed(2)}K` : `${parseFloat(size / (1024 * 1024)).toFixed(2)}M`;
+          fileLabel.textContent = name + `  (${fileSize})`;
+        }
+      });
+
+
+      uploadBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const selectedFile = fileInput.files[0];
+
+        // if no file selected
+        if(selectedFile == undefined) {
+          alert('Please select a file');
+          return;
+        }
+
+        // If file is selected
+        uploadBtn.setAttribute('disabled', true);
+
+        var payload = new FormData();
+        payload.append('file_url', selectedFile);
+
+        const request = new XMLHttpRequest();
+        request.open('POST', `/api/update_article/file/${paperIdInput.value}`);
+
+        progressBar.forEach(item => {
+          item.classList.remove('hidden');
+        });
+
+        var dotCount = 1;
+        var interval = setInterval(() => {
+          var str = '';
+          for(var i = 0; i <= dotCount; i++) {
+            str += '.';
+          }
+          dotCount++;
+          if(dotCount == 3) {
+            dotCount = 0;
+          }
+          responsive.textContent = 'Uploading' + str;
+        }, 400);
+
+        request.upload.addEventListener('progress', (e) => {
+          const uploadDone = parseInt((e.loaded / e.total) * 100);
+          progressedBar.setAttribute('style', `width: ${uploadDone}%`);
+          progressedBar.setAttribute('aria-valuenow', uploadDone);
+          progressedBar.textContent = uploadDone + '%';
+
+          if(uploadDone == 100) {
+            clearInterval(interval);
+          }
+        });
+
+        request.addEventListener('load', (e) => {
+          const res = JSON.parse(request.response);
+          if(request.status == 200) {
+            responsive.textContent = res.message;
+            responsive.classList.add('text-success');
+            progressedBar.classList.add('bg-success');
+            showSuccessMenu();
+            showSuccessMessage('File Uploaded Successfully');
+            /* RELOAD: when upload complete */
+            setTimeout(() => {
+                window.location.reload();
+              }, 1500);
+          } else {
+            responsive.textContent = res.message;
+            responsive.classList.add('text-danger');
+            progressedBar.classList.add('bg-danger');
+
+            /* RELOAD: to upload again */
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+          }
+        })
+        request.send(payload);
+      })
+    </script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

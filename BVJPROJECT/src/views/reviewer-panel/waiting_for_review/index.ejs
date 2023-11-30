@@ -1,0 +1,342 @@
+<%- include('../../partials/head') %>
+  <body class="bg-light">
+    <!-- This is success animation modal  -->
+    <div id="success" class="opacity-0 pointer-events-none fixed top-0 right-0 h-screen flex w-full justify-center items-center bg-black/40 z-50 transition-all duration-75 ease-in">
+    </div>
+    <!-- End of success animation modal  -->
+
+    <!-- This is review now modal  -->
+    <div id="reviewnow" class="opacity-0 pointer-events-none h-screen w-full fixed top-0 right-0 flex justify-center items-start bg-black/40 z-40 transition-all duration-75 ease-in">
+    </div>
+    <!-- End of review now modal  -->
+    <%- include('../partials/top-navbar') %> 
+    <div class="container-fluid pt-4 px-md-0 p-2 lg:p-4">
+      <div class="row">
+        <%- include('../partials/left-sidebar') %> 
+        <div class="col-md-7 text-justify">
+          <div class="card card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <span class="h2 d-block">Wating for Review</span>
+              </div>
+            </div>
+
+            <!-- Here all the paper will be listed  -->
+            <div class="flex flex-col justify-start items-start gap-y-4 py-4 w-full" data-paperListContainer>
+              <div class="w-full h-16 flex justify-center items-center">
+                <div class="spinner-border text-primary" role="status"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <%- include('../../partials/right-sidebar') %> 
+      </div>
+    </div>
+    
+    <script src="/js/floating-success-menu.js" type="module"></script>
+    <script type="module">
+      import { showSuccessMenu, showSuccessMessage, showErrorMessage } from "/js/floating-success-menu.js";
+      const paperListContainer = document.querySelector('[data-paperListContainer]');
+      const reviewNowModal = document.querySelector('#reviewnow');
+      var data = [], page = 0, limit = 20, total = 0, totalPage = 0;
+
+      function reviewNowModalHTML(paper_id){ 
+        return `<div class="bg-white w-3/4 lg:w-1/2 py-3 rounded relative mt-20 lg:mt-10">
+          <div class="flex justify-between items-center px-3 pb-3 border-b border-gray-300">
+            <span class="text-2xl font-medium">Review</span>
+            <button class="btn btn-light" data-close-btn aria-colindex="1"><i class="fa-sharp fa-solid fa-xmark"></i></button>
+          </div>
+  
+          <div class="px-3 max-h-96 overflow-auto">
+            <div>
+              <h5 class="h6 mt-3">Revised File(s):</h5>
+              <div class="input-group mb-2">
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="inputGroupFile02" accept=".pdf, .docx, .doc, .PDF, .DOC, .DOCX">
+                  <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+                </div>
+              </div>
+                <div class="progress hidden" data-progressBar>
+                  <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                </div>
+              </div>
+              
+              <div id="revised-files">
+                <ul class="list-group list-group-flush" id="upload-file-list">
+                </ul>
+              </div>
+            <div class="mb-3">
+              <h6 class="h6">Comment:</h6>
+              <textarea class="form-control" name="comment" id="comment" rows="3" placeholder="Write comment"></textarea>
+            </div>
+          </div>
+
+          <div class="w-full flex justify-center items-center">
+            <button class="btn btn-primary" data-close-btn aria-colindex="1" aria-details="${paper_id}" data-save-btn>
+              <span class="spinner-border spinner-border-sm hidden" role="status" data-savt-btn></span>
+              Save Review
+            </button>
+          </div>
+        </div>`;
+      }
+
+      function renderPaper(){
+        paperListContainer.innerHTML = '';
+        var renderableData = data.slice(page * limit, (page + 1) * limit);
+
+        if(renderableData.length == 0){
+          paperListContainer.innerHTML = `
+            <div class="w-full h-16 flex justify-center items-center">
+              <span class="text-xl font-semibold">No paper found</span>
+            </div>
+          `;
+        }
+
+        
+        renderableData.forEach(item => {
+          const paperList = document.createElement('div');
+          paperList.classList.add("bg-light", "border", "border-gray-300", "px-3", "py-2", "flex", "flex-col", "justify-start", "items-start", "w-full", "rounded-sm");
+          paperList.innerHTML = `
+            <div class="bg-dark text-white text-sm font-semibold mt-2 px-2 py-1 rounded">Paper ID: ${item.paper_id}</div>
+            <h1 class="text-xl">${item.title}</h1>
+            <h3 class="text-xl font-extralight">${item.paper_author}</h3>
+            <div class="btn-group w-full mt-2" role="group" aria-label="Basic example">
+              <a href="/uploads/papers/${item.file_url}" download role="button" type="button" class="btn bg-sky-600 hover:bg-sky-700 transition-all duration-150 ease-in text-white/90 hover:text-white"><i class="fa-solid fa-download"></i> <span class="hidden lg:inline-block ml-1"> Download File</span></a>
+              <a href="/uploads/papers/${item.file_url}" target="_blank" role="button" type="button" class="btn bg-yellow-500 hover:bg-yellow-600 transition-all duration-150 ease-in text-yellow-900"><i class="fa-solid fa-eye"></i> <span class="hidden lg:inline-block ml-1"> View File</span></a>
+              <button type="button" class="btn bg-info text-white/90 hover:text-white" data-review-now aria-colindex="1" aria-label="${item.paper_id}"><i class="fa-solid fa-book"></i><span class="hidden lg:inline-block ml-1"> Review Now</span></button>
+              <button type="button" class="btn bg-success text-white/90 hover:text-white flex justify-center item-center gap-1" data-submit-review aria-label="${item.paper_id}">
+                <div id="submit-paper-icon">
+                  <i class="fa-sharp fa-solid fa-check-double"></i>
+                </div> 
+                <div class="spinner-border spinner-border-sm hidden" role="status" id="submit-paper-spinner">
+                </div>
+                <span class="hidden lg:inline-block ml-1"> Submit Review</span>
+              </button>
+            </div>
+          `;
+          paperListContainer.appendChild(paperList);
+        });
+
+        /* Accept Review Request Button */
+        const reviewNowBtns = document.querySelectorAll('[data-review-now]');
+        reviewNowBtns.forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            /* Opens the review modal */
+            reviewNowModal.classList.remove('opacity-0', 'pointer-events-none');
+            reviewNowModal.innerHTML = reviewNowModalHTML(btn.getAttribute('aria-label'));
+
+            /* Close the review modal */
+            const closeBtn = document.querySelector('[data-close-btn]');
+            closeBtn.addEventListener('click', (e) => {
+              if(document.querySelector('[data-file-list]')){
+                alert('You have uploaded a file. Please submit the review first.')
+              } else {
+                reviewNowModal.classList.add('opacity-0', 'pointer-events-none');
+                reviewNowModal.innerHTML = '';
+              }
+            });
+
+            /* Upload functionality */
+            const fileInput = document.querySelector('#inputGroupFile02');
+            const fileLabel = document.querySelector('[for="inputGroupFile02"]');
+            const uploadBtn = document.querySelector('#uploadBtn');
+            const progressBar = document.querySelectorAll('[data-progressBar]');
+            const progressedBar = document.querySelector('.progress-bar');
+            const uploadFileList = document.querySelector('#upload-file-list');
+
+            fileInput.addEventListener('change', (e) => {
+              const {
+                name,
+                size
+              } = e.target.files[0];
+              if(name.length == 0 ) {
+                fileLabel.textContent = 'Choose File';
+              } else {
+                var fileSize = (size / 1024) < 1024 ? `${parseFloat(size / 1024).toFixed(2)}K` : `${parseFloat(size / (1024 * 1024)).toFixed(2)}M`;
+                fileLabel.textContent = name + `  (${fileSize})`;
+                StartUpload();
+              }
+            });
+
+
+            function StartUpload(){
+              const selectedFile = fileInput.files[0];
+
+              // if no file selected
+              if(selectedFile == undefined) {
+                alert('Please select a file');
+                return;
+              }
+
+              /* If file is selected Start to upload */
+              var payload = new FormData();
+              payload.append('file', selectedFile);
+
+              const request = new XMLHttpRequest();
+
+              // get the paper_id from the url
+              const pathname = '/reviewer_panel/upload';
+              request.open('POST', `${pathname}`);
+
+              progressBar.forEach(item => {
+                item.classList.remove('hidden');
+              });
+
+              request.upload.addEventListener('progress', (e) => {
+                const uploadDone = parseInt((e.loaded / e.total) * 100);
+                progressedBar.setAttribute('style', `width: ${uploadDone}%`);
+                progressedBar.setAttribute('aria-valuenow', uploadDone);
+                progressedBar.textContent = uploadDone + '%';
+              });
+
+              request.addEventListener('load', (e) => {
+                const res = JSON.parse(request.response);
+                if(request.status == 200) {
+                  setTimeout(() => {
+                    progressBar.forEach(item => {
+                      item.classList.add('hidden');
+                    });
+                  }, 500);
+
+                  /* clear fileInput */
+                  fileLabel.textContent = 'Choose File';
+
+                  /* Add the uploaded file into list */
+                  const newLi = document.createElement('li');
+                  newLi.classList.add('list-group-item', 'bg-gray-100');
+                  newLi.setAttribute('data-file-list', '');
+                  newLi.innerHTML = `
+                  <div class="flex justify-between items-center">
+                      <div class="text-gray-700">${res.filename}</div>
+                      <div>
+                        <button class="text-danger" data-delete-upload-file>
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>`;
+                  uploadFileList.appendChild(newLi);
+                  const deleteBtn = document.querySelectorAll('[data-delete-upload-file]');
+                  deleteBtn.forEach(item => {
+                    item.addEventListener('click', (e) => {
+                      const filename = item.parentElement.previousElementSibling.textContent;
+                      const parentLi = item.parentElement.parentElement.parentElement;
+                      parentLi.remove();
+                      fetch('/reviewer_panel/delete_file', {
+                        method: 'DELETE',
+                        headers: {
+                          'Content-Type': 'application/json;charset=utf-8'
+                        },
+                        body: JSON.stringify({
+                          filename
+                        })
+                      })
+                    })
+                  })
+                } else {
+                  progressedBar.classList.add('bg-danger');
+                }
+              })
+              request.send(payload);
+            }
+
+
+            /* Save review */
+            const submitBtn = document.querySelector('[data-save-btn]');
+            submitBtn.addEventListener('click', (e) => {
+              submitBtn.disabled = true;
+              document.querySelector('[data-savt-btn]').classList.remove('hidden');
+              submitBtn.classList.add('animate-pulse');
+              const paper_id = submitBtn.getAttribute('aria-details');
+              const files = document.querySelectorAll('[data-file-list]');
+              var fileUrl = '';
+              files.forEach((item, index) => fileUrl += (item.firstElementChild.firstElementChild.textContent + ((index < files.length - 1) ? ',': '')));
+              const comment = document.querySelector('textarea[name=comment]').value;
+
+              fetch('/reviewer_panel/waiting_for_review/save_review', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                  paper_id: paper_id, comment: comment, files_url: fileUrl
+                })
+              })
+              .then(res => res.json())
+              .then(res => {
+                if(res.success){
+                  reviewNowModal.classList.add('opacity-0', 'pointer-events-none');
+                  reviewNowModal.innerHTML = '';
+
+                  showSuccessMenu();
+                  showSuccessMessage(res.message);
+                }
+              }).catch(err => {
+                showErrorMessage('Something went wrong!');
+              });
+            })
+            
+          })
+        });
+
+        /* Submit Review */
+        const submitReviewBtn = document.querySelectorAll('[data-submit-review]');
+        submitReviewBtn.forEach((item) => {
+          item.addEventListener('click', (e) => {
+            const paper_id = item.getAttribute('aria-label');
+            const spinner = document.querySelector('#submit-paper-spinner');
+            const icon = document.querySelector('#submit-paper-icon');
+            spinner.classList.remove('hidden');
+            icon.classList.add('hidden');
+            fetch('/reviewer_panel/waiting_for_review/submit_review', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+              },
+              body: JSON.stringify({
+                paper_id: paper_id
+              })
+            }).then(res => res.json())
+              .then(res => {
+                spinner.classList.add('hidden');
+                icon.classList.remove('hidden');
+                if(res.success){
+                  showSuccessMenu();
+                  showSuccessMessage(res.message);
+                  fetchPaper();
+                }else {
+                  showSuccessMenu();
+                  showErrorMessage(res.message);
+                }
+              }).catch(err => {
+                  showErrorMessage('Something went wrong!');
+                });
+            })
+        })
+      }
+
+      const fetchPaper = () => {
+        return fetch('/reviewer_panel/waiting_for_review/list')
+          .then((res) => res.json())
+          .then(dd => {
+            data = dd;
+            renderPaper();
+        });
+      }
+
+      fetchPaper();
+    </script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

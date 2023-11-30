@@ -1,0 +1,28 @@
+<div class="col-md-3 md:mt-0 lg:mt-0 pr-4 ">
+  <div class="bg-white shadow">
+    <div class="bg-sky-600 text-white text-xl font-bold px-4 py-2">Site Manager</div>
+    <div class="w-full px-4 flex flex-col justify-start items-start gap-4 py-4">
+      <a href="/admin_panel/site_manager/edit/home" class="w-full px-2 py-1.5 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex <%- editPath === 'home' ? 'justify-center' : 'justify-start' %> items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+        <i class="fa-solid fa-home"></i>
+        <span class="font-semibold">Homepage</span>
+      </a>
+      <a href="/admin_panel/site_manager/edit/editorial_board" class="w-full px-2 py-1.5 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex <%- editPath === 'editorial_board' ? 'justify-center' : 'justify-start' %> items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+        <i class="fa-solid fa-newspaper"></i>
+        <span class="font-semibold">Editorial Board</span>
+      </a>
+      <a href="/admin_panel/site_manager/edit/guide" class="w-full px-2 py-1.5 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex <%- editPath === 'guide' ? 'justify-center' : 'justify-start' %> items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+        <i class="fa-solid fa-person-chalkboard"></i>
+        <span class="font-semibold">Guide For Author</span>
+      </a>
+      <a href="/admin_panel/site_manager/edit/indexing" class="w-full px-2 py-1.5 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex <%- editPath === 'indexing' ? 'justify-center' : 'justify-start' %> items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+        <i class="fa-solid fa-hashtag"></i>
+        <span class="font-semibold">Indexing</span>
+      </a>
+
+      <a href="/admin_panel/site_manager/edit/contact" class="w-full px-2 py-1.5 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex <%- editPath === 'contact' ? 'justify-center' : 'justify-start' %> items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+        <i class="fa-solid fa-hashtag"></i>
+        <span class="font-semibold">Contact</span>
+      </a>
+    </div>
+  </div>
+</div>

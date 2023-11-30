@@ -1,0 +1,61 @@
+<div class="col-md-3 md:mt-0 lg:mt-0">
+  <div class="pr-2">
+    <% if(path ==='/home'){ %>
+      <div class="card bg-primary d-block overflow-hidden">
+        <div class="card-header">
+          <h4 class="text-light  lg:text-xl font-semibold">Announcement</h4>
+        </div>
+        <div class="card-body bg-light">
+          <span class="d-block">
+            Dear Veterinarians and researchers, you are invited to submit
+            your valuable research works/findings in Bangladesh Veterinary
+            Journal. Please <a href="/submit" class="text-primary">click here </a> to
+            submit your paper.
+          </span>
+        </div>
+      </div>
+      <div class="w-full mt-2 border-[1px] border-orange-500 rounded overflow-hidden">
+        <img src="/images/open_access.png" alt="open_access" class="object-fill w-full">
+      </div>
+      <div class="w-full mt-2 border-[1px] border-gray-500 rounded overflow-hidden">
+        <img src="/images/crossref.png" alt="crossref" class="object-fill w-full">
+      </div>
+    <% } else if( path === '/editorial' || path === '/articles' || path === '/guide' || path === '/submit' || path === '/indexing' || path === '/track' || path === '/contact'   ) { %>
+      <div class="bg-white border-[1px] border-blue-600 rounded-sm overflow-hidden mb-2">
+        <div class="bg-blue-600 text-white px-3 py-2">
+          <span class="text-xl font-semibold">Recently Published Papers</span>
+        </div>
+        <div class="flex flex-col justify-start items-start max-h-[80vh] overflow-y-auto">
+          <% recentPapers.forEach(item => { %>
+            <div class="px-2 py-2 border-b border-gray-300 w-full text-justify">
+              <a href="/articles/view_paper/<%- item.id %>" class="text-justify text-sky-600">
+                <%- item.title %>
+              </a>
+              <div>
+                <span class="text-sm text-gray-500">Author(s): </span>
+                <span class="text-sm text-gray-500"><%- item.paper_authors %></span>
+              </div>
+            </div>
+          <% }) %>
+          <div class="py-1 px-2">
+            <a href="/articles" class="text-sky-600 font-semibold">See All Articles</a>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="card bg-primary d-block overflow-hidden">
+        <div class="card-header">
+          <h4 class="text-light  lg:text-xl font-semibold">Announcement</h4>
+        </div>
+        <div class="card-body bg-light">
+          <span class="d-block">
+            Dear Veterinarians and researchers, you are invited to submit
+            your valuable research works/findings in Bangladesh Veterinary
+            Journal. Please <a href="/submit" class="text-primary">click here </a> to
+            submit your paper.
+          </span>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>

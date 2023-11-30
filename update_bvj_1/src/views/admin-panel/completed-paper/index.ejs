@@ -1,0 +1,144 @@
+<%- include('../../partials/head') %>
+
+<body class="bg-light">
+  <%- include('../../partials/top-navbar') %>
+  <div class="container-fluid pt-4 px-md-0 p-4">
+    <div class="row">
+      <%- include('../partials/left-sidebar') %>
+      <div class="col-md-7 text-justify">
+        <div class="card card-body">
+          <div class="row">
+            <div class="col-md-12">
+              <span class="h2 d-block">Completed Paper</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col justify-start items-start gap-y-4 py-2 w-full" data-paperContainer>
+            <div class="w-full flex justify-center items-center">
+              <div class="spinner-grow text-primary" role="status"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%- include('../../partials/right-sidebar') %>
+    </div>
+  </div>
+
+  <script src="/js/floating-success-menu.js" type="module"></script>
+  <script type="module">
+    import { showSuccessMenu, showSuccessMessage, showErrorMessage } from "/js/floating-success-menu.js";
+    const paperListContainer = document.querySelector('[data-paperContainer]');
+
+    var data = [], page = 0, limit = 20, total = 0, totalPage = 0;
+
+
+    function renderPaper() {
+      paperListContainer.innerHTML = '';
+      // var renderableData = data.slice(page * limit, (page + 1) * limit);
+      var renderableData = [...data];
+
+      if (renderableData.length == 0) {
+        return paperListContainer.innerHTML = `
+            <div class="w-full h-16 flex justify-center items-center">
+              <span class="text-xl font-semibold">No paper found</span>
+            </div>
+          `;
+      }
+
+      renderableData.forEach(item => {
+        const paperList = document.createElement('div');
+        paperList.classList.add("bg-light", "border", "border-gray-300", "px-3", "py-2", "flex", "flex-col", "justify-start", "items-start", "w-full", "rounded-sm");
+        paperList.innerHTML = `
+                <a href="/articles/view_paper/${item.paper_id}" class="text-xl text-sky-600">${item.title}</a>
+                <h4 class="text-xl font-extralight mt-1"><i class="fa-solid fa-check"></i> ${item.paper_author}</h4>
+                
+                <div class="flex justify-start items-start gap-2 mt-2">
+                  <button class="btn btn-dark font-bold text-xs" data-paperIdCopy data-paper_id="${item.paper_id}">Paper ID: ${item.paper_id}</button>
+                  <button class="btn bg-blue-700/90 hover:bg-blue-700 transition-all duration-150 ease-in text-white font-bold text-xs">Volume: ${item.volume_title}</button>
+                  <button class="btn btn-info font-bold text-xs">Pages: ${item.page}</button>
+                </div>
+
+                <div class="w-full flex justify-end items-center gap-2 my-2">
+                  <a href="/admin_panel/update_article_info?paper_id=${item.paper_id}" class="btn btn-warning text-yellow-900 flex justify-start items-center gap-2"><i class="fa-solid fa-pen-to-square"></i> <span class="hidden lg:block">Edit</span></button>
+                  <a href="/uploads/papers/${item.file_url}" download role="button" class="btn btn-primary flex justify-start items-center gap-2"><i class="fa-solid fa-download"></i> <span class="hidden lg:block">Download File</span></a>
+                  <button class="btn btn-danger flex justify-start items-center gap-2" data-paper_id="${item.paper_id}" data-delete-btn><i class="fa-solid fa-trash"></i> <span class="hidden lg:block">Delete</span></button>
+                </div>
+          `;
+        paperListContainer.appendChild(paperList);
+
+        /* Delete Paper Button Click Event */
+        const deleteBtns = document.querySelectorAll('[data-delete-btn]');
+        deleteBtns.forEach((item) => {
+          item.addEventListener('click', (e) => {
+            const paper_id = item.getAttribute('data-paper_id');
+            const confirm = window.confirm('Are you sure to delete?');
+
+            if (confirm) {
+              fetch(`/api/admin/paper/delete`, {
+                method: "DELETE",
+                headers: {
+                  'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({
+                  paper_id: paper_id
+                })
+              }).then(res => res.json())
+                .then(res => {
+                  if (res.success) {
+                    fetchPapers();
+                    showSuccessMenu();
+                    showSuccessMessage('Deleted Successfully');
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 2000);
+                  } else {
+                    showErrorMenu();
+                    showErrorMessage(res.message);
+                  }
+                })
+            } else {
+              return;
+            }
+          })
+        })
+        /* End Delete Paper Button Click Event */
+
+        const paperIdCopy = document.querySelectorAll('[data-paperIdCopy]');
+        paperIdCopy.forEach(item => {
+          item.addEventListener('click', function () {
+            const paperId = this.getAttribute('data-paper_id');
+            navigator.clipboard.writeText(paperId);
+            item.innerHTML = `<i class="fa-solid fa-check"></i> Paper ID Copied`;
+            setTimeout(() => {
+              item.innerHTML = `Paper ID: ${paperId}`;
+            }, 2000);
+          });
+        });
+      });
+    }
+
+    function fetchPapers() {
+      fetch('/api/paper/completed')
+        .then(res => res.json())
+        .then(res => {
+          data = res.data;
+          renderPaper();
+        })
+        .catch(err => {
+
+        })
+    }
+    fetchPapers();
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="/js/bootstrap.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+
+</html>

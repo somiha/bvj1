@@ -1,0 +1,94 @@
+<%- include('../partials/head') %>
+  <body class="bg-light">
+    <%- include('../partials/top-navbar') %> 
+    <div class="container-fluid pt-4 px-md-0 p-4">
+      <div class="row">
+        <%- include('../partials/left-sidebar') %> 
+        <div class="col-md-7 text-justify">
+          <div class="card card-body">
+            <span class="h4 d-block">Volume: <%- volume %></span>
+            <hr>
+            <% if(editorials.length > 0){ %>
+              <div class="mt-2 mb-1 bg-sky-200 text-blue-900 w-full p-2">
+                <span class="text-lg font-semibold">Editorials</span>
+              </div>
+              <% editorials.forEach(item => { %>
+                <div class="bg-light border border-gray-300 px-3 py-2 flex flex-col justify-start items-start w-full rounded-sm mb-2">
+                  <a href="/articles/editorial/<%- item.id %>" class="text-xl text-justify text-sky-600"><%- item.title %></a>
+                  <% if(item.description.length > 0){ %>
+                    <p>
+                      <% if(item.description.length > 200){ %>
+                        <span><%- item.description.substr(0, 200) %></span>....
+                        <a href="/articles/editorial/<%- item.id %>" class="text-sky-600">Read More>> </a>
+                      <% } else { %>
+                        <span class="text-gray-600">
+                          <%- item.description %>
+                        </span>
+                      <% } %>
+                    </p>
+                  <% } %>
+
+                  <div class="w-full flex justify-start items-center gap-2 my-2">
+                    <a href="/articles/editorial/<%- item.id %>" class="btn btn-warning text-yellow-900 flex justify-start items-center gap-2"><i class="fa-solid fa-book-open"></i> <span class="hidden lg:block">Read Editorial</span></a>
+                    <a href="/uploads/papers/<%- item.file_url %>" download role="button" class="btn btn-primary flex justify-start items-center gap-2"><i class="fa-solid fa-download"></i> <span class="hidden lg:block">Download</span></a>
+                  </div>
+                </div>
+              <% }) %>
+            <% } %>
+
+            <div class="mt-2 mb-1 bg-sky-200 text-blue-900 w-full p-2">
+              <span class="text-lg font-semibold">Articles</span>
+            </div>
+            <div class="flex flex-col justify-start items-start gap-4">
+              <% if(articles.length === 0){ %>
+                <div class="bg-light border border-gray-300 px-3 py-2 flex flex-col justify-start items-start w-full rounded-sm">
+                  <h1 class="text-xl">No articles found</h1>
+                </div>
+              <% } %>
+              <% articles.forEach((item) => { %>
+                <div class="bg-light border border-gray-300 px-3 py-2 flex flex-col justify-start items-start w-full rounded-sm">
+                  <a href="/articles/view_paper/<%- item.paper_id %>" class="text-xl text-justify text-sky-600"><%- item.paper_title %></a>
+                  <h4 class="text-xl font-extralight mt-1"><i class="fa-solid fa-check"></i> <%- item.paper_author %></h4>
+                  
+                  <div class="flex justify-start items-start gap-2 mt-2">
+                    <button class="btn btn-dark font-bold text-xs">Paper ID: <%- item.paper_id %></button>
+                    <button class="btn bg-blue-700/90 hover:bg-blue-700 transition-all duration-150 ease-in text-white font-bold text-xs">Volume: <%- item.volume_title %></button>
+                    <button class="btn btn-info font-bold text-xs">Pages: <%- item.page %></button>
+                  </div>
+
+                  <div class="w-full flex justify-end items-center gap-2 my-2">
+                    <a href="/articles/view_paper/<%- item.paper_id %>" class="btn btn-warning text-yellow-900 flex justify-start items-center gap-2"><i class="fa-solid fa-book-open"></i> <span class="hidden lg:block">Read Paper</span></a>
+                    <a href="/uploads/papers/<%- item.file_url %>" download role="button" class="btn btn-primary flex justify-start items-center gap-2"><i class="fa-solid fa-download"></i> <span class="hidden lg:block">Download File</span></a>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+
+            <div class="flex justify-start items-start mt-4">
+              <% if(page > 1){ %>
+                <a href="/articles/<%- volume_id %>?page=<%- parseInt(page) - 1 %>" class="bg-stone-600 text-white px-4 py-1.5 hover:bg-black/50 rounded-l focus:outline-none" data-prevBtn>Newer</a>
+              <% } else { %>
+                <button class="bg-stone-600 text-white px-4 py-1.5 hover:bg-black/50 rounded-l focus:outline-none" data-prevBtn>Newer</button>
+              <% } %>
+              <a href="/articles/<%- volume_id %>?page=<%- parseInt(page) + 1 %>" class="bg-stone-500 text-white px-4 py-1.5 hover:bg-black/50 rounded-r focus:outline-none" data-nextBtn>Older</a>
+            </div>
+          </div>
+        </div>
+        <%- include('../partials/right-sidebar') %> 
+      </div>
+    </div>
+    <%- include('../partials/footer') %>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

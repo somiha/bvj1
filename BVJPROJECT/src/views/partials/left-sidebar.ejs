@@ -1,0 +1,20 @@
+<div class="col-md-2" id="nav">
+  <ul>
+    <li class="<%- ( path === '/home') ? 'active' : '' %>"><a href="/">Home</a></li>
+    <li class="<%- ( path === '/editorial') ? 'active' : '' %>"><a href="/editorial">Editorial Board</a></li>
+    <li class="<%- ( path === '/articles') ? 'active' : '' %>"><a href="/articles"> View Articles </a></li>
+    <li class="<%- ( path === '/guide') ? 'active' : '' %>"><a href="/guide">Guide for Authors</a></li>
+    <li class="<%- ( path === '/submit') ? 'active' : '' %>"><a href="/submit">Submit Your Paper</a></li>
+    <li class="<%- ( path === '/indexing') ? 'active' : '' %>"><a href="/indexing">Indexing</a></li>
+    <li class="<%- ( path === '/track') ? 'active' : '' %>"><a href="/track">Track your paper</a></li>
+    <li class="<%- ( path === '/contact') ? 'active' : '' %>"><a href="/contact">Contact</a></li>
+    <li class=""><a href="/reviewer_panel/login">Reviewer Login</a></li>
+    
+  </ul>
+
+  <% if(path === '/home'){ %>
+    <div class="pl-2.5 mt-2 w-1/2 lg:w-full">
+      <a href="https://info.flagcounter.com/hU6j" class="w-full"><img class="w-full" src="https://s11.flagcounter.com/count2/hU6j/bg_FFFFFF/txt_000000/border_CCCCCC/columns_2/maxflags_10/viewers_0/labels_0/pageviews_0/flags_0/percent_0/" alt="Flag Counter" border="0"></a>
+    </div>
+  <% } %>
+</div>

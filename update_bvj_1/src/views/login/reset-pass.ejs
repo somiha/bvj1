@@ -1,0 +1,114 @@
+<%- include('../partials/head') %>
+  <body class="bg-light">
+    <%- include('../partials/top-navbar') %> 
+    <div class="container-fluid pt-4 px-md-0 p-4">
+      <div class="row">
+        <%- include('../partials/left-sidebar') %> 
+        <div class="col-md-7 pb-4 text-justify d-flex flex-col align-items-center justify-content-center">
+          <% if(errorMsg.length > 0) { %>
+            <div class="alert alert-danger" role="alert">
+              <strong>Error!</strong> <%- errorMsg %>
+            </div>
+          <% } %>
+
+          <% if(successMsg.length > 0) { %>
+            <div class="alert alert-success" role="alert">
+              <strong>Success</strong> <%- successMsg %>
+            </div>
+          <% } %>
+          
+          
+          <div class="card rounded max-width-400">
+            <div class="card-body">
+              <h2 class="text-center text-xl lg:text-3xl font-medium mb-2">Reset Password</h2>
+              <hr class="w-50 mx-auto mb-2" />
+              <form action="" method="post">
+                <input type="hidden" name="email" value="<%- mail %>">
+                <input type="hidden" name="token" value="<%- token %>">
+                <div class="form-group">
+                  <label for="email">
+                    <i class="fas fa-lock textBlue"></i> New password
+                  </label>
+                  <input 
+                    type="text" 
+                    class="form-control"
+                    name="password"
+                    id="password" 
+                    placeholder="Password"
+                    required
+                    data-searchFormInput
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="c_password">
+                    <i class="fas fa-lock textBlue"></i> Confirm new password
+                  </label>
+                  <input 
+                    type="text" 
+                    class="form-control"
+                    name="c_password"
+                    id="c_password" 
+                    placeholder="Confirm Password"
+                    required
+                    data-searchFormInput
+                  />
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                  <button
+                    type="submit"
+                    id="searchbtn"
+                    class="btn bg-primary w-50 text-white hover:brightness-95 btn-transition"
+                  ><div id="spinner" class="hidden spinner-border text-light h-5 w-5 mr-2" role="status"></div>Update Password</button>
+                </div>
+              </form>
+
+              <div id="result" class="hidden">
+                <h2 class="text-xl lg:text-2xl font-medium mb-2">Search Result</h2>
+                <div id="resut_list_item">
+                  <div class="card mb-2">
+                    <div class="card-body">
+                      <div id="email-not-found">
+                        Email not found!
+                      </div>
+                      <div class="d-flex flex-column flex-lg-row justify-content-between items-center">
+                        <div class="d-flex flex-column">
+                          <span class="text-lg text-xl-lg font-medium">mmcse19@gmail.com</span>
+                        </div>
+                        <div class="d-flex flex-column mt-1">
+                          <button class="btn btn-primary text-sm-sm text-lg-lg">Send Recovery Email</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <%- include('../partials/right-sidebar') %> 
+      </div>
+    </div>
+
+    <!-- This is success animation modal  -->
+    <div id="success" class="opacity-0 pointer-events-none absolute top-0 right-0 h-screen flex w-full justify-center items-center bg-black/40 z-50 transition-all duration-75 ease-in">
+    </div>
+    <!-- End of success animation modal  -->
+
+    <script src="/js/modules/login/forgot-pass.script.js" type="module"></script>
+    <script src="/js/floating-success-menu.js" type="module"></script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+<div class="container-fluid" id="header">
+  <div id="hamburger" class="d-none">
+    <i class="fas fa-bars"></i>
+  </div>
+  <div class="row">
+    <div class="col-md-9 d-flex">
+      <img src="/images/logo.png" alt="" class="" id="logo-image" />
+      <div class="text-left text-white pl-2">
+        <a href="/" id="title">Bangladesh Veterinary Journal</a>
+        <i class="d-block">
+          An Official Journal of Bangladesh Veterinary Association
+        </i>
+      </div>
+    </div>
+    <div class="col-md-3 text-md-right text-center text-white py-2">
+      <h6 class="mb-2 font-semibold">pISSN 0378-8113</h6>
+      <h6 class="mb-2 font-semibold">eISSN 2708-6054</h6>
+
+      <% if(isLogged){ %>
+        <div class="float-md-right">
+          <% if(isAdmin){ %>
+            <a href="" class="btn btn-sm btn-outline-light">Pofile</a>
+          <% } else { %>
+            <a href="/profile" class="btn btn-sm btn-outline-light">Pofile</a>
+          <% } %>
+          <a href="/logout" class="btn btn-sm btn-outline-light">Logout</a>
+        </div>
+      <% } else { %>
+        <div class="float-md-right">
+          <a href="/login" class="btn btn-sm btn-outline-light">Login</a>
+          <a href="/register" class="btn btn-sm btn-outline-light">Register</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>

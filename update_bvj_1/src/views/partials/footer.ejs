@@ -1,0 +1,21 @@
+<div class="bg-gray-200 py-1.5 flex justify-center items-center" id="footer">
+  <% var date = new Date() %>
+  <small>
+    Developed by <a href="https://www.code-studio4.com"><span class="text-blue-600">Code</span><span
+        class="text-red-600">Studio</span></a> &copy;Copyright <%= date.getFullYear() %>
+  </small>
+</div>
+
+<script>
+  const footer = document.getElementById('footer');
+  const footerHeight = footer.offsetTop;
+  // console.log('Footer height:', footerHeight, 'px');
+
+  var screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+  // console.log('Screen height:', screenHeight, 'px');
+
+  if (footerHeight < screenHeight) {
+    footer.classList.add('fixed', 'bottom-0', 'w-full');
+  }
+
+</script>

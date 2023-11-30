@@ -1,0 +1,18 @@
+module.exports = {
+  LOGIN: '/login',
+  REGISTER: '/register',
+  FORGOT_PASS: '/forgot-password',
+  RESET_PASS: '/reset-password',
+  HOME: '/',
+  DASHBOARD: '/dashboard',
+  PROFILE: '/profile',
+  LOGOUT: '/logout',
+  ADMIN: '/admin',
+  EDITORIAL: '/editorial',
+  ARTICLES: '/articles',
+  GUIDE: '/guide',
+  SUBMIT: '/submit',
+  INDEXING: '/indexing',
+  TRACK: '/track',
+  CONTACT: '/contact',
+}

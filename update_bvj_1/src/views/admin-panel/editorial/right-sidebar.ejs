@@ -1,0 +1,15 @@
+<div class="col-md-3 md:mt-0 lg:mt-0 pr-4 ">
+  <div class="bg-white shadow">
+    <div class="bg-sky-600 text-white text-xl font-bold px-4 py-2">Editorials</div>
+    <div class="w-full px-4 flex flex-col justify-start items-start gap-4 py-4">
+      <a href="/admin_panel/editorial/add" class="w-full px-2 py-1.5 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex <%- editPath === 'add' ? 'justify-center' : 'justify-start' %> items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+        <i class="fa-solid fa-home"></i>
+        <span class="font-semibold">Add Editorial</span>
+      </a>
+      <a href="/admin_panel/editorial/view" class="w-full px-2 py-1.5 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex <%- editPath === 'view' ? 'justify-center' : 'justify-start' %> items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+        <i class="fa-solid fa-newspaper"></i>
+        <span class="font-semibold">View Editorials</span>
+      </a>
+    </div>
+  </div>
+</div>

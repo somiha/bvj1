@@ -1,0 +1,12 @@
+<div class="col-md-2" id="nav">
+  <ul>
+    <li class="<%- ( path === '/request_for_review') ? 'active' : '' %>"><a href="/reviewer_panel/request_for_review">Request for Review</a></li>
+    <li class="<%- ( path === '/waiting_for_review') ? 'active' : '' %>"><a href="/reviewer_panel/waiting_for_review">Waiting for Review</a></li>
+    <li class="<%- ( path === '/reviewed_paper') ? 'active' : '' %>"><a href="/reviewer_panel/reviewed_paper">Reviewed Paper</a></li>
+    <li class="<%- ( path === '/completed_paper') ? 'active' : '' %>"><a href="/reviewer_panel/completed_paper">Completed Paper</a></li>
+    <li class="<%- ( path === '/completed_paper') ? 'active' : '' %>"><a href="/reviewer_panel/completed_paper/certificate">Recognition Certificate</a></li>
+    <% if(path === '/login'){ %>
+      <li><a href="/login">Author Login</a></li>
+    <% } %>
+  </ul>
+</div>

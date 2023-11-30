@@ -1,0 +1,121 @@
+<%- include('../../partials/head') %>
+  <body class="bg-light">
+      <!-- This is success animation modal  -->
+      <div id="success" class="opacity-0 pointer-events-none fixed top-0 right-0 h-screen flex w-full justify-center items-center bg-black/40 z-50 transition-all duration-75 ease-in">
+      </div>
+      <!-- End of success animation modal  -->
+    <%- include('../partials/top-navbar') %> 
+    <div class="container-fluid pt-4 px-md-0 p-4">
+      <div class="row">
+        <%- include('../partials/left-sidebar') %> 
+        <div class="col-md-7 text-justify">
+          <div class="card card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <span class="h2 d-block">Request for Review</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col justify-start items-start gap-y-4 py-4 w-full" data-paperListContainer>
+              <div class="w-full h-16 flex justify-center items-center">
+                <div class="spinner-border text-primary" role="status"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <%- include('../../partials/right-sidebar') %> 
+      </div>
+    </div>
+
+    <script src="/js/floating-success-menu.js" type="module"></script>
+    <script type="module">
+      import { showSuccessMenu, showSuccessMessage, showErrorMessage } from "/js/floating-success-menu.js";
+      const paperListContainer = document.querySelector('[data-paperListContainer]');
+      var data = [], page = 0, limit = 20, total = 0, totalPage = 0;
+
+      function renderPaper(){
+        paperListContainer.innerHTML = '';
+        var renderableData = data.slice(page * limit, (page + 1) * limit);
+
+        if(renderableData.length == 0){
+          paperListContainer.innerHTML = `
+            <div class="bg-light border border-gray-300 px-3 py-2 flex flex-col justify-start items-start w-full rounded-sm">
+              <h1 class="text-xl">No paper found!</h1>
+            </div>
+          `;
+          return;
+        }
+
+        renderableData.forEach(item => {
+          const paperList = document.createElement('div');
+          paperList.classList.add("bg-light", "border", "border-gray-300", "px-3", "py-2", "flex", "flex-col", "justify-start", "items-start", "w-full", "rounded-sm");
+          paperList.innerHTML = `
+            <div class="bg-dark text-white text-sm font-semibold mt-2 px-2 py-1 rounded">Paper ID: ${item.paper_id}</div>
+            <h1 class="text-xl">${item.title}</h1>
+            <h3 class="text-xl font-extralight">${item.paper_author}</h3>
+            <div class="btn-group w-full mt-2" role="group" aria-label="Basic example">
+              <a href="/uploads/papers/${item.file_url}" download role="button" type="button" class="btn bg-sky-600 hover:bg-sky-700 transition-all duration-150 ease-in text-white/90 hover:text-white"><i class="fa-solid fa-download"></i> <span class="hidden lg:inline-block ml-1"> Download File</span></a>
+              <a href="/uploads/papers/${item.file_url}" target="_blank" role="button" type="button" class="btn bg-yellow-500 hover:bg-yellow-600 transition-all duration-150 ease-in text-yellow-900"><i class="fa-solid fa-eye"></i> <span class="hidden lg:inline-block ml-1"> View File</span></a>
+              <button type="button" class="btn bg-success text-white/90 hover:text-white" data-acpt-review-rqBtn aria-colindex="1" aria-label="${item.id}" aria-description="${item.paper_id}" aria-details="${item.reviewer_id}"><i class="fa-solid fa-check"></i><span class="hidden lg:inline-block ml-1"> Accept</span></button>
+              <button type="button" class="btn bg-danger text-white/90 hover:text-white"><i class="fa-sharp fa-solid fa-cancel"></i> <span class="hidden lg:inline-block ml-1"> Reject</span></button>
+            </div>
+          `;
+          paperListContainer.appendChild(paperList);
+        });
+
+        /* Accept Review Request Button */
+        const acptRevieweRqBtns = document.querySelectorAll('[data-acpt-review-rqBtn]');
+        acptRevieweRqBtns.forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            btn.disabled = true;
+            fetch('/reviewer_panel/request_for_review/accept', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                id: btn.getAttribute('aria-label'),
+                paper_id: btn.getAttribute('aria-description'),
+                reviewer_id: btn.getAttribute('aria-details')
+              })
+            }).then(res => res.json())
+              .then(res => {
+                if(res.success){
+                  showSuccessMenu();
+                  showSuccessMessage(res.message);
+                  fetchData();
+                }
+              }).catch(err => {
+                showErrorMessage('Something went wrong!');
+                btn.disabled = false;
+              });
+          })
+        });
+      }
+
+      function fetchData(){
+        fetch('/reviewer_panel/request_for_review/list')
+        .then((res) => res.json())
+        .then(dd => {
+          data = dd;
+          renderPaper();
+        });
+      }
+
+      fetchData();
+    </script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

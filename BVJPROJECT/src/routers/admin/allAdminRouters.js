@@ -1,0 +1,42 @@
+const express = require('express');
+const recentSubmissionsRouter = require('./recent_submissions.router');
+const waitingForReviewRouter = require('./waiting_for_review.router');
+const reviewedPaperRouter = require('./reviewed_paper.router');
+const completedPaperRouter = require('./completed_paper.router');
+const volumesAdminRouter = require('./volumes.router');
+const addReviewerRouter = require('./add_reviewer.router');
+const updateReviewerRouter = require('./update_reviewer.router');
+const addOldArticleRouter = require('./add_old_article.router');
+const updateArticleInfoRouter = require('./update_article_info.router');
+const updateAuthorInfoRouter = require('./update_author_info.router');
+const isLogged = require('../../middlewares/checkIsLogged.middleware');
+const isAdmin = require('../../middlewares/isAdmin.middleware');
+const revisedPaperRouter = require('./revised_paper.router');
+const paperInRevisionRouter = require('./paper_in_revision.router');
+const sentBackToAuthorRouter = require('./sent_back_to_author.router');
+const returnedPaperRouter = require('./returned_paper.router');
+const siteManagerRouter = require('./site_manager.router');
+const addEditorialRouter = require('./editoral.router');
+const adminPanelRouter = express.Router();
+
+adminPanelRouter.get('/',  isLogged, isAdmin, (req, res) => {
+  res.redirect('/admin_panel/recent_submissions');
+});
+adminPanelRouter.use('/recent_submissions', isLogged, isAdmin, recentSubmissionsRouter);
+adminPanelRouter.use('/waiting_for_review', isLogged, isAdmin, waitingForReviewRouter);
+adminPanelRouter.use('/reviewed_paper', isLogged, isAdmin, reviewedPaperRouter);
+adminPanelRouter.use('/sent_back_to_author', isLogged, isAdmin, sentBackToAuthorRouter);
+adminPanelRouter.use('/returned_paper', isLogged, isAdmin, returnedPaperRouter);
+adminPanelRouter.use('/paper_in_revision', isLogged, isAdmin, paperInRevisionRouter);
+adminPanelRouter.use('/revised_paper', isLogged, isAdmin, revisedPaperRouter);
+adminPanelRouter.use('/completed_paper', isLogged, isAdmin, completedPaperRouter);
+adminPanelRouter.use('/volumes', isLogged, isAdmin, volumesAdminRouter);
+adminPanelRouter.use('/add_reviewer', isLogged, isAdmin, addReviewerRouter);
+adminPanelRouter.use('/update_reviewer', isLogged, isAdmin, updateReviewerRouter);
+adminPanelRouter.use('/add_old_article', isLogged, isAdmin, addOldArticleRouter);
+adminPanelRouter.use('/update_article_info', isLogged, isAdmin, updateArticleInfoRouter);
+adminPanelRouter.use('/update_author_info', isLogged, isAdmin, updateAuthorInfoRouter);
+adminPanelRouter.use('/site_manager', isLogged, isAdmin, siteManagerRouter);
+adminPanelRouter.use('/editorial', isLogged, isAdmin, addEditorialRouter);
+
+module.exports = adminPanelRouter;

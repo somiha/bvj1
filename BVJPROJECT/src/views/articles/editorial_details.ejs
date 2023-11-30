@@ -1,0 +1,50 @@
+<%- include('../partials/head') %>
+  <body class="bg-light">
+    <%- include('../partials/top-navbar') %> 
+    <div class="container-fluid pt-4 px-md-0 p-4">
+      <div class="row">
+        <%- include('../partials/left-sidebar') %> 
+        <div class="col-md-7 text-justify">
+          <div class="mb-2">
+            <a href="/articles/view_volume/<%- editorial.volume_id %>" class="text-lg text-sky-600">Volume: <%- editorial.volume_title %></a> > <span class="italic"><%- editorial.title %></span>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <p class="text-xl text-justify text-blue-600 font-semibold">
+                <%- editorial.title %>
+              </p>
+
+              <p class="text-justify text-gray-600 mb-3">
+                <span class="font-semibold text-lg">Description-</span><%- editorial.description %>
+              </p>
+
+              <div class="w-full h-[90vh] relative bg-gray-400">
+                <iframe
+                  src="/uploads/papers/<%- editorial.file_url %>"
+                  frameBorder="0"
+                  scrolling="auto"
+                  height="100%"
+                  width="100%"
+              ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+        <%- include('../partials/right-sidebar') %> 
+      </div>
+    </div>
+    <%- include('../partials/footer') %>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

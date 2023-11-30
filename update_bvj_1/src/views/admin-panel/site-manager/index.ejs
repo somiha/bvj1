@@ -1,0 +1,90 @@
+<%- include('../../partials/head') %>
+  <body class="bg-light">
+    <!-- This is floating menu-1  -->
+    <div id="floating1" class="opacity-0 pointer-events-none h-screen w-full fixed top-0 right-0 flex justify-center items-start bg-black/40 z-40 transition-all duration-75 ease-in">
+    </div>
+    <!-- End of floating menu-1  -->
+
+    <!-- This is success animation modal  -->
+    <div id="success" class="opacity-0 pointer-events-none fixed top-0 right-0 h-screen flex w-full justify-center items-center bg-black/40 z-50 transition-all duration-75 ease-in">
+    </div>
+    <!-- End of success animation modal  -->
+    <%- include('../../partials/top-navbar') %> 
+    <div class="container-fluid pt-4 px-md-0 p-4">
+      <div class="row">
+        <%- include('../partials/left-sidebar') %> 
+        <div class="col-md-7 text-justify">
+          <div class="bg-white shadow">
+            <div class="bg-sky-600 text-white text-xl font-bold px-4 py-2">Resource Manager</div>
+            <div class="flex justify-start items-center gap-x-6 gap-y-4 p-4 flex-wrap">
+              <a href="/admin_panel/add_reviewer" class="w-3/12 no-underline px-3 py-2 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex justify-center items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+                <i class="fa-solid fa-user-plus"></i>
+                <span class="font-semibold">Add Reviewer</span>
+              </a>
+              <a href="/admin_panel/update_reviewer" class="w-3/12 px-3 py-2 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex justify-center items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+                <i class="fa-solid fa-user-pen"></i>
+                <span class="font-semibold">Update Reviewer</span>
+              </a>
+              <a href="/admin_panel/add_old_article" class="w-3/12 px-3 py-2 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex justify-center items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+                <i class="fa-solid fa-file-circle-plus"></i>
+                <span class="font-semibold">Add Old Article</span>
+              </a>
+              <a href="/admin_panel/update_article_info" class="w-3/12 px-3 py-2 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex justify-center items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+                <i class="fa-solid fa-file-pen"></i>
+                <span class="font-semibold">Update Article Info</span>
+              </a>
+
+              <a href="/admin_panel/update_author_info" class="w-3/12 px-3 py-2 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex justify-center items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+                <i class="fa-solid fa-user-pen"></i>
+                <span class="font-semibold">Update Author Info</span>
+              </a>
+
+              <a href="/admin_panel/editorial/view" class="w-3/12 px-3 py-2 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex justify-center items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+                <i class="fa-solid fa-square"></i>
+                <span class="font-semibold">Editorials</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="bg-white shadow mt-8">
+            <div class="bg-sky-600 text-white text-xl font-bold px-4 py-2">Site Manager</div>
+            <div class="flex justify-start items-center gap-x-6 gap-y-4 p-4 flex-wrap">
+              <a href="/admin_panel/site_manager/edit/home" class="w-3/12 px-3 py-2 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex justify-center items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+                <i class="fa-solid fa-home"></i>
+                <span class="font-semibold">Homepage</span>
+              </a>
+              <a href="/admin_panel/site_manager/edit/editorial_board" class="w-3/12 px-3 py-2 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex justify-center items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+                <i class="fa-solid fa-newspaper"></i>
+                <span class="font-semibold">Editorial Board</span>
+              </a>
+              <a href="/admin_panel/site_manager/edit/guide" class="w-3/12 px-3 py-2 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex justify-center items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+                <i class="fa-solid fa-person-chalkboard"></i>
+                <span class="font-semibold">Guide For Author</span>
+              </a>
+              <a href="/admin_panel/site_manager/edit/indexing" class="w-3/12 px-3 py-2 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex justify-center items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+                <i class="fa-solid fa-hashtag"></i>
+                <span class="font-semibold">Indexing</span>
+              </a>
+
+              <a href="/admin_panel/site_manager/edit/contact" class="w-3/12 px-3 py-2 border-2 text-sky-700 border-sky-700 rounded-sm hover:bg-sky-500 hover:border-sky-600 hover:text-white hover:shadow-md flex justify-center items-center gap-2 transition-all duration-75 ease-in" style="text-decoration: none;">
+                <i class="fa-solid fa-phone"></i>
+                <span class="font-semibold">Contact</span>
+              </a>
+
+            </div>
+          </div>
+        </div>
+        <%- include('../../partials/right-sidebar') %> 
+      </div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/app.js"></script>
+
+  </body>
+</html>

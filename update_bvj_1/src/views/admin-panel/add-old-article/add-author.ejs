@@ -1,0 +1,714 @@
+<%- include('../../partials/head') %>
+
+<body class="bg-light">
+  <%- include('../../partials/top-navbar') %>
+  <div class="container-fluid pt-4 px-md-0 p-4">
+    <div class="row">
+      <%- include('../partials/left-sidebar') %>
+      <div class="col-md-7 text-justify">
+        <div class="card card-body">
+          <span class="h2 d-block pb-3"> Add Author</span>
+          <!-- Alert shows here -->
+          <div class="alert alert-success hidden" role="alert"></div>
+          <div class="alert alert-danger <%- msg.length > 0 ? '' : 'hidden' %>" role="alert">
+            <%- msg %>
+          </div>
+          <!--/ Alert shows here -->
+
+          <!-- Added authors list  -->
+          <div class="card <%- alreadyAddedAuthors.length === 0 ? 'hidden' : '' %>" data-addedAuthor>
+            <div class="card-header">
+              <h5 class="h5">Added Authors</h5>
+            </div>
+            <div class="card-body" id="added-author-list">
+              <div class="row mb-3">
+                <div class="col-4">
+                  <strong>Full Name</strong>
+                </div>
+                <div class="col-4">
+                  <strong>Email</strong>
+                </div>
+                <div class="col-4">
+                  <strong>Action</strong>
+                </div>
+              </div>
+
+              <% alreadyAddedAuthors.forEach((item) => { %>
+              <div class="row mb-2" data-authorList>
+                <div class="col-4">
+                  <span data-full_name><%- item.first_name %> <%- item.middle_name %> <%- item.last_name %></span>
+                </div>
+                <div class="col-4">
+                  <span data-email><%- item.email %></span>
+                </div>
+                <div class="col-4">
+                  <button class="btn btn-danger" data-paper_id="<%- item.paper_id %>" data-author_id="<%- item.id %>"
+                    data-deleteBtn>Delete</button>
+                </div>
+              </div>
+              <% }) %>
+
+              <script>
+                // Delete Author
+                const deleteAuthorBtn = document.querySelectorAll('[data-deleteBtn]');
+                deleteAuthorBtn.forEach((item) => {
+                  item.addEventListener('click', (e) => {
+                    const paper_id = item.getAttribute('data-paper_id');
+                    const author_id = item.getAttribute('data-author_id');
+                    fetch('/admin_panel/add_old_article/api/delete-author', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        paper_id,
+                        author_id
+                      })
+                    }).then(res => res.json())
+                      .then(res => {
+                        const listEl = document.getElementById('added-author-list');
+                        const addedAuthor = document.querySelector('[data-addedAuthor]');
+                        var htmlStr = '';
+                        if (res.data.length === 0) {
+                          return addedAuthor.classList.add('hidden');
+                        }
+                        res.data.forEach(item => {
+                          htmlStr += `
+                            <div class="row mb-2" data-authorList>
+                              <div class="col-4">
+                                <span data-full_name>${item.first_name} ${item.middle_name} ${item.last_name}</span>
+                              </div>
+                              <div class="col-4">
+                                <span data-email>${item.email}</span>
+                              </div>
+                              <div class="col-4">
+                                <button class="btn btn-danger" data-paper_id="${addAuthorBtn.getAttribute('aria-label')}" data-author_id="${item.id}" data-deleteBtn>Delete</button>
+                              </div>
+                            </div>
+                            `;
+                        });
+
+                        listEl.innerHTML = `<div class="row mb-3">
+                              <div class="col-4">
+                                <strong>Full Name</strong>
+                              </div>
+                              <div class="col-4">
+                                <strong>Email</strong>
+                              </div>
+                              <div class="col-4">
+                                <strong>Action</strong>
+                              </div>
+                            </div>` + htmlStr;
+                        addedAuthor.classList.remove('hidden');
+                      })
+                  })
+                })
+              </script>
+            </div>
+          </div>
+          <!--/ Added authors list  -->
+
+          <div>
+            <div class="tab-content" id="nav-tabContent">
+              <div class="form-group pt-3">
+                <label for="title"> Name* </label>
+                <div class="form-row">
+                  <div class="col">
+                    <input type="text" class="form-control" name="first_name" required placeholder="First Name*"
+                      value="" data-inputField />
+                  </div>
+                  <div class="col">
+                    <input type="text" class="form-control" name="middle_name" placeholder="Middle Name" value=""
+                      data-inputField />
+                  </div>
+                  <div class="col">
+                    <input type="text" class="form-control" name="last_name" required placeholder="Last Name*" value=""
+                      data-inputField />
+                  </div>
+                </div>
+                <div>
+                  <small class="text-danger hidden" data-first_name>First Name is required</small>
+                </div>
+                <div>
+                  <small class="text-danger hidden" data-last_name>Last Name is required</small>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="Affiliation"> Affiliation:</label>
+                <input type="text" name="affiliation" id="Affiliation" class="form-control"
+                  placeholder="Enter Affiliation" required data-inputField>
+                <div>
+                  <small class="text-danger hidden" data-affiliation>Affiliation is required</small>
+                </div>
+              </div>
+              <div class="form-group mb-1">
+                <label for="email"> E-Mail*:</label>
+                <input type="email" name="email" class="form-control" placeholder="Enter Author Email*" value=""
+                  data-inputField required>
+                <div>
+                  <small class="text-danger hidden" data-email>Email is required</small>
+                </div>
+                <div class="mt-1">
+                  <input type="checkbox" name="is_corresponding" data-inputField />
+                  <label for="name"> Corresponding Author </label>
+                </div>
+                <div class="w-full flex flex-col justify-center items-center gap-2">
+                  <button type="button" class="btn btn-outline-primary 
+                        px-2 text-sm" data-searchAuthor aria-label="<%- paperId %>">
+                    <div class="spinner-border text-primary spinner-border-sm hidden" role="status" data-add-spinner1>
+                    </div>
+                    Search Author
+                  </button>
+
+                  <div class="alert alert-danger hidden" data-email-add-author-error role="alert"><strong>Not
+                      found!</strong> No author found with this email. </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="country"> Country* </label>
+                <select name="country" class="custom-select mr-sm-2" id="country" required data-inputField>
+                  <option value="" selected>Select country</option>
+                  <option>Afghanistan</option>
+                  <option>Åland Islands</option>
+                  <option>Albania</option>
+                  <option>Algeria</option>
+                  <option>American Samoa</option>
+                  <option>Andorra</option>
+                  <option>Angola</option>
+                  <option>Anguilla</option>
+                  <option>Antarctica</option>
+                  <option>Antigua and Barbuda</option>
+                  <option>Argentina</option>
+                  <option>Armenia</option>
+                  <option>Aruba</option>
+                  <option>Australia</option>
+                  <option>Austria</option>
+                  <option>Azerbaijan</option>
+                  <option>Bahamas</option>
+                  <option>Bahrain</option>
+                  <option>Bangladesh</option>
+                  <option>Barbados</option>
+                  <option>Belarus</option>
+                  <option>Belgium</option>
+                  <option>Belize</option>
+                  <option>Benin</option>
+                  <option>Bermuda</option>
+                  <option>Bhutan</option>
+                  <option>Bolivia</option>
+                  <option>Bonaire</option>
+                  <option>Bosnia</option>
+                  <option>Botswana</option>
+                  <option>Bouvet Island</option>
+                  <option>Brazil</option>
+                  <option>British Indian Ocean Territory</option>
+                  <option>Brunei Darussalam</option>
+                  <option>Bulgaria</option>
+                  <option>Burkina Faso</option>
+                  <option>Burundi</option>
+                  <option>Cambodia</option>
+                  <option>Cameroon</option>
+                  <option>Canada</option>
+                  <option>Cape Verde</option>
+                  <option>Cayman Islands</option>
+                  <option>Central African Republic</option>
+                  <option>Chad</option>
+                  <option>Chile</option>
+                  <option>China</option>
+                  <option>Christmas Island</option>
+                  <option>Cocos Islands</option>
+                  <option>Colombia</option>
+                  <option>Comoros</option>
+                  <option>Congo</option>
+                  <option>Cook Islands</option>
+                  <option>Costa Rica</option>
+                  <option>Côte d'Ivoire</option>
+                  <option>Croatia</option>
+                  <option>Cuba</option>
+                  <option>Curaçao</option>
+                  <option>Cyprus</option>
+                  <option>Czech Republic</option>
+                  <option>Denmark</option>
+                  <option>Djibouti</option>
+                  <option>Dominica</option>
+                  <option>Dominican Republic</option>
+                  <option>Ecuador</option>
+                  <option>Egypt</option>
+                  <option>El Salvador</option>
+                  <option>Equatorial Guinea</option>
+                  <option>Eritrea</option>
+                  <option>Estonia</option>
+                  <option>Ethiopia</option>
+                  <option>Falkland Islands</option>
+                  <option>Faroe Islands</option>
+                  <option>Fiji</option>
+                  <option>Finland</option>
+                  <option>France</option>
+                  <option>French Guiana</option>
+                  <option>French Polynesia</option>
+                  <option>French Southern Territories</option>
+                  <option>Gabon</option>
+                  <option>Gambia</option>
+                  <option>Georgia</option>
+                  <option>Germany</option>
+                  <option>Ghana</option>
+                  <option>Gibraltar</option>
+                  <option>Greece</option>
+                  <option>Greenland</option>
+                  <option>Grenada</option>
+                  <option>Guadeloupe</option>
+                  <option>Guam</option>
+                  <option>Guatemala</option>
+                  <option>Guernsey</option>
+                  <option>Guinea</option>
+                  <option>Guinea-Bissau</option>
+                  <option>Guyana</option>
+                  <option>Haiti</option>
+                  <option>Heard Island</option>
+                  <option>Holy See</option>
+                  <option>Honduras</option>
+                  <option>Hong Kong</option>
+                  <option>Hungary</option>
+                  <option>Iceland</option>
+                  <option>India</option>
+                  <option>Indonesia</option>
+                  <option>Iran</option>
+                  <option>Iraq</option>
+                  <option>Ireland</option>
+                  <option>Isle of Man</option>
+                  <option>Israel</option>
+                  <option>Italy</option>
+                  <option>Jamaica</option>
+                  <option>Japan</option>
+                  <option>Jersey</option>
+                  <option>Jordan</option>
+                  <option>Kazakhstan</option>
+                  <option>Kenya</option>
+                  <option>Kiribati</option>
+                  <option>Korea</option>
+                  <option>Kuwait</option>
+                  <option>Kyrgyzstan</option>
+                  <option>Lao People's Democratic Republic</option>
+                  <option>Latvia</option>
+                  <option>Lebanon</option>
+                  <option>Lesotho</option>
+                  <option>Liberia</option>
+                  <option>Libya</option>
+                  <option>Liechtenstein</option>
+                  <option>Lithuania</option>
+                  <option>Luxembourg</option>
+                  <option>Macao</option>
+                  <option>Macedonia</option>
+                  <option>Madagascar</option>
+                  <option>Malawi</option>
+                  <option>Malaysia</option>
+                  <option>Maldives</option>
+                  <option>Mali</option>
+                  <option>Malta</option>
+                  <option>Marshall Islands</option>
+                  <option>Martinique</option>
+                  <option>Mauritania</option>
+                  <option>Mauritius</option>
+                  <option>Mayotte</option>
+                  <option>Mexico</option>
+                  <option>Micronesia</option>
+                  <option>Moldova, Republic of</option>
+                  <option>Monaco</option>
+                  <option>Mongolia</option>
+                  <option>Montenegro</option>
+                  <option>Montserrat</option>
+                  <option>Morocco</option>
+                  <option>Mozambique</option>
+                  <option>Myanmar</option>
+                  <option>Namibia</option>
+                  <option>Nauru</option>
+                  <option>Nepal</option>
+                  <option>Netherlands</option>
+                  <option>New Caledonia</option>
+                  <option>New Zealand</option>
+                  <option>Nicaragua</option>
+                  <option>Niger</option>
+                  <option>Nigeria</option>
+                  <option>Niue</option>
+                  <option>Norfolk Island</option>
+                  <option>Northern Mariana Islands</option>
+                  <option>Norway</option>
+                  <option>Oman</option>
+                  <option>Pakistan</option>
+                  <option>Palau</option>
+                  <option>Palestinian Territory</option>
+                  <option>Panama</option>
+                  <option>Papua New Guinea</option>
+                  <option>Paraguay</option>
+                  <option>Peru</option>
+                  <option>Philippines</option>
+                  <option>Pitcairn</option>
+                  <option>Poland</option>
+                  <option>Portugal</option>
+                  <option>Puerto Rico</option>
+                  <option>Qatar</option>
+                  <option>Réunion</option>
+                  <option>Romania</option>
+                  <option>Russian Federation</option>
+                  <option>Rwanda</option>
+                  <option>Saint Barthélemy</option>
+                  <option>Saint Helena</option>
+                  <option>Saint Kitts and Nevis</option>
+                  <option>Saint Lucia</option>
+                  <option>Saint Martin</option>
+                  <option>Saint Pierre</option>
+                  <option>Saint Vincent</option>
+                  <option>Samoa</option>
+                  <option>San Marino</option>
+                  <option>Sao Tome and Principe</option>
+                  <option>Saudi Arabia</option>
+                  <option>Senegal</option>
+                  <option>Serbia</option>
+                  <option>Seychelles</option>
+                  <option>Sierra Leone</option>
+                  <option>Singapore</option>
+                  <option>Sint Maarten</option>
+                  <option>Slovakia</option>
+                  <option>Slovenia</option>
+                  <option>Solomon Islands</option>
+                  <option>Somalia</option>
+                  <option>South Africa</option>
+                  <option>South Georgia</option>
+                  <option>South Sudan</option>
+                  <option>Spain</option>
+                  <option>Sri Lanka</option>
+                  <option>Sudan</option>
+                  <option>Suriname</option>
+                  <option>Svalbard and Jan Mayen</option>
+                  <option>Swaziland</option>
+                  <option>Sweden</option>
+                  <option>Switzerland</option>
+                  <option>Syrian Arab Republic</option>
+                  <option>Taiwan, Province of China</option>
+                  <option>Tajikistan</option>
+                  <option>Tanzania</option>
+                  <option>Thailand</option>
+                  <option>Timor-Leste</option>
+                  <option>Togo</option>
+                  <option>Tokelau</option>
+                  <option>Tonga</option>
+                  <option>Trinidad and Tobago</option>
+                  <option>Tunisia</option>
+                  <option>Turkey</option>
+                  <option>Turkmenistan</option>
+                  <option>Turks and Caicos Islands</option>
+                  <option>Tuvalu</option>
+                  <option>Uganda</option>
+                  <option>Ukraine</option>
+                  <option>United Arab Emirates</option>
+                  <option>United Kingdom</option>
+                  <option>United States</option>
+                  <option>Uruguay</option>
+                  <option>Uzbekistan</option>
+                  <option>Vanuatu</option>
+                  <option>Venezuela</option>
+                  <option>Viet Nam</option>
+                  <option>Virgin Islands, British</option>
+                  <option>Virgin Islands, U.S.</option>
+                  <option>Wallis and Futuna</option>
+                  <option>Western Sahara</option>
+                  <option>Yemen</option>
+                  <option>Zambia</option>
+                  <option>Zimbabwe</option>
+                </select>
+                <div>
+                  <small class="text-danger hidden" data-country>Select a country</small>
+                </div>
+              </div>
+
+              <div class="text-center pb-2" id="nextAuthors">
+                <button type="button" class="btn btn-outline-primary 
+                    px-4 mb-2" data-addAuthorBtn aria-label="<%- paperId %>">
+                  <div class="spinner-border text-primary spinner-border-sm hidden" role="status" data-add-spinner>
+                  </div>
+                  Add Author
+                </button>
+                <form method="post">
+                  <button class="btn btn-primary px-4">
+                    <div class="spinner-border text-primary spinner-border-sm hidden" role="status" data-next-spinner>
+                    </div>
+                    Next
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%- include('../../partials/right-sidebar') %>
+    </div>
+  </div>
+
+  <script>
+    const searchAuthor = document.querySelector('[data-searchAuthor]');
+    const addAuthorBtn = document.querySelector('[data-addAuthorBtn]');
+    const addSpinner = document.querySelector('[data-add-spinner]');
+
+    /* Search author and Add to the paper */
+    searchAuthor.addEventListener('click', (e) => {
+      const email = document.querySelector('[name="email"]').value;
+      if (validateEmail(email)) {
+        const spninner = document.querySelector('[data-add-spinner1]');
+        spninner.classList.remove('hidden');
+        fetch('/api/author/search?q=' + email)
+          .then(res => res.json())
+          .then(res => {
+
+            spninner.classList.add('hidden');
+
+            if (res.success && res.data.length > 0) {
+
+              const author = res.data[0];
+
+
+              const first_name = document.querySelector('[name="first_name"]');
+              const middle_name = document.querySelector('[name="middle_name"]');
+              const last_name = document.querySelector('[name="last_name"]');
+              const email = document.querySelector('[name="email"]');
+              const country = document.querySelector('[name="country"]');
+              const affiliation = document.querySelector('[name="affiliation"]');
+
+              first_name.value = author.first_name;
+              middle_name.value = author.middle_name;
+              last_name.value = author.last_name;
+              email.value = author.email;
+              country.value = author.country;
+              affiliation.value = author.affiliation;
+
+
+            } else if (res.success && res.data.length === 0) {
+              const errorMsg = document.querySelector('[data-email-add-author-error]');
+              errorMsg.classList.remove('hidden');
+              setTimeout(() => {
+                errorMsg.classList.add('hidden');
+              }, 0);
+            }
+          })
+      }
+    })
+    /* END: Search author and Add to the paper */
+
+
+    /* Populate input data into formData object */
+    var formData = {
+      paper_id: addAuthorBtn.getAttribute('aria-label'),
+      is_corresponding: 0,
+      middle_name: '',
+      affiliation: '',
+    };
+    const inputFields = document.querySelectorAll('[data-inputField]');
+    inputFields.forEach((item) => {
+      if (item.getAttribute('type') === 'checkbox') {
+        item.addEventListener('change', (e) => {
+          formData[item.name] = item.checked ? 1 : 0;
+        });
+      }
+      item.addEventListener('input', (e) => {
+        formData[item.name] = item.value;
+      });
+    })
+
+    // email validation with regex function
+    function validateEmail(email) {
+      var re = /\S+@\S+\.\S+/;
+      return re.test(email);
+    }
+
+    /* Empty the form */
+    function emptyForm() {
+      inputFields.forEach((item) => {
+        item.value = '';
+      })
+      document.querySelector('[name="is_corresponding"]').checked = false;
+    }
+
+    /* Validate Form */
+    const requiredFields = document.querySelectorAll('[required]');
+    function validateForm() {
+      var flag = 0;
+      requiredFields.forEach((item) => {
+        if (item.name == 'email') {
+          if (!validateEmail(item.value)) {
+            flag = 1;
+            const errEl = document.querySelector('[data-email]');
+            errEl.classList.remove('hidden');
+            errEl.innerHTML = 'Please enter a valid email';
+          } else if (item.value == '') {
+            flag = 1;
+            const errEl = document.querySelector('[data-email]');
+            errEl.classList.remove('hidden');
+            errEl.innerHTML = 'Email is required';
+          } else {
+            const errEl = document.querySelector('[data-email]');
+            errEl.classList.add('hidden');
+          }
+          return;
+        }
+        if (item.value === '') {
+          flag = 1;
+          const errEl = document.querySelector('[data-' + item.name + ']');
+          errEl.classList.remove('hidden');
+          errEl.innerHTML = item.name.charAt(0).toUpperCase() + item.name.slice(1) + ' is required';
+        } else {
+          const errEl = document.querySelector('[data-' + item.name + ']');
+          errEl.classList.add('hidden');
+        }
+      })
+      return !flag;
+    }
+
+    /* Add Author Button */
+    addAuthorBtn.addEventListener('click', () => {
+
+      if (validateForm()) {
+        addSpinner.classList.remove('hidden');
+        addAuthorBtn.setAttribute('disabled', true);
+
+        formData.first_name = document.querySelector('[name="first_name"]').value;
+        formData.middle_name = document.querySelector('[name="middle_name"]').value;
+        formData.last_name = document.querySelector('[name="last_name"]').value;
+        formData.country = document.querySelector('[name="country"]').value;
+
+        fetch('/admin_panel/add_old_article/api/add-author', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        }).then(res => res.json())
+          .then(res => {
+            const listEl = document.getElementById('added-author-list');
+
+            const addedAuthor = document.querySelector('[data-addedAuthor]');
+
+            var htmlStr = '';
+            res.data.forEach(item => {
+              htmlStr += `
+                <div class="row mb-2" data-authorList>
+                  <div class="col-4">
+                    <span data-full_name>${item.first_name} ${item.middle_name} ${item.last_name}</span>
+                  </div>
+                  <div class="col-4">
+                    <span data-email>${item.email}</span>
+                  </div>
+                  <div class="col-4">
+                    <button class="btn btn-danger" data-paper_id="${addAuthorBtn.getAttribute('aria-label')}" data-author_id="${item.id}" data-deleteBtn>Delete</button>
+                  </div>
+                </div>
+                `;
+            });
+
+            listEl.innerHTML = `<div class="row mb-3">
+                  <div class="col-4">
+                    <strong>Full Name</strong>
+                  </div>
+                  <div class="col-4">
+                    <strong>Email</strong>
+                  </div>
+                  <div class="col-4">
+                    <strong>Action</strong>
+                  </div>
+                </div>` + htmlStr;
+            addedAuthor.classList.remove('hidden');
+            // Delete Author
+            const deleteAuthor = () => {
+              const deleteAuthorBtn = document.querySelectorAll('[data-deleteBtn]');
+              deleteAuthorBtn.forEach((item) => {
+                item.addEventListener('click', (e) => {
+                  const paper_id = item.getAttribute('data-paper_id');
+                  const author_id = item.getAttribute('data-author_id');
+                  fetch('/admin_panel/add_old_article/api/delete-author', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      paper_id,
+                      author_id
+                    })
+                  }).then(res => res.json())
+                    .then(res => {
+                      const listEl = document.getElementById('added-author-list');
+
+                      const addedAuthor = document.querySelector('[data-addedAuthor]');
+                      var htmlStr = '';
+                      if (res.data.length === 0) {
+                        return addedAuthor.classList.add('hidden');
+                      }
+                      res.data.forEach(item => {
+                        htmlStr += `
+                          <div class="row mb-2" data-authorList>
+                            <div class="col-4">
+                              <span data-full_name>${item.first_name} ${item.middle_name} ${item.last_name}</span>
+                            </div>
+                            <div class="col-4">
+                              <span data-email>${item.email}</span>
+                            </div>
+                            <div class="col-4">
+                              <button class="btn btn-danger" data-paper_id="${addAuthorBtn.getAttribute('aria-label')}" data-author_id="${item.id}" data-deleteBtn>Delete</button>
+                            </div>
+                          </div>
+                          `;
+                      });
+
+                      listEl.innerHTML = `<div class="row mb-3">
+                            <div class="col-4">
+                              <strong>Full Name</strong>
+                            </div>
+                            <div class="col-4">
+                              <strong>Email</strong>
+                            </div>
+                            <div class="col-4">
+                              <strong>Action</strong>
+                            </div>
+                          </div>` + htmlStr;
+                      addedAuthor.classList.remove('hidden');
+                      deleteAuthor();
+                    })
+                })
+              })
+            }
+
+            deleteAuthor();
+
+            addSpinner.classList.add('hidden');
+            addAuthorBtn.removeAttribute('disabled');
+            if (res.success) {
+              const alert = document.querySelector('.alert-success');
+              const alert2 = document.querySelector('.alert-danger');
+              alert2.classList.add('hidden');
+
+              alert.innerHTML = `<strong>Success!</strong> ${res.message}`;
+              alert.classList.remove('hidden');
+              emptyForm();
+            } else {
+              const alert = document.querySelector('.alert-danger');
+              const alert2 = document.querySelector('.alert-success');
+              alert2.classList.add('hidden');
+
+              alert.innerHTML = `<strong>Error!</strong> ${res.message}`;
+              alert.classList.remove('hidden');
+            }
+          })
+      }
+    });
+      /* END: Add Author Btn */
+
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="/js/bootstrap.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+
+</html>

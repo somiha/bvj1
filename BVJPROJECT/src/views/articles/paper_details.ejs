@@ -1,0 +1,70 @@
+<%- include('../partials/head') %>
+  <body class="bg-light">
+    <%- include('../partials/top-navbar') %> 
+    <div class="container-fluid pt-4 px-md-0 p-4">
+      <div class="row">
+        <%- include('../partials/left-sidebar') %> 
+        <div class="col-md-7 text-justify">
+          <div class="mb-2">
+            <a href="/articles/view_volume/<%- paper.volume %>" class="text-lg text-sky-600">Volume <%- paper.volume_title %></a> > <span class="italic"><%- paper.paper_title %></span>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div class="mb-2">
+                <a href="#abstract" class="text-sky-500 text-lg italic">Paper ID: <%= paper.paper_id %></a>
+                <div class="card-text text-lg italic">Bangladesh Veterenary Journal <%- paper.volume_title %> : <%- paper.page %></div>
+                <p class="card-text text-lg italic"><%= paper.paper_type %></p>
+              </div>
+              <p class="text-xl text-justify text-blue-600 font-semibold">
+                <%= paper.paper_title %>
+              </p>
+              <div class="mt-2">
+                <p class="text-gray-500">
+                  Author(s): 
+                    <% authors.forEach((item, index) => { %>
+                      <%- item.first_name %> <%- item.middle_name.length > 0 ? `${item.middle_name} ` : '' %> <%- item.last_name %><sup class="text-sm"><%- index + 1 %></sup></p> <% authors.length > index + 1 ? ',' : '' %>
+                    <% }) %>
+              </div>
+              <div>
+                <% authors.forEach((item, index) => { %>
+                  <span class="text-lg font-semibold"><sup class="text-sm"><%- index + 1 %></sup><%- item.affiliation %></span>
+                <% }) %>
+                
+              </div>
+              <div id="abstract" class="text-lg mt-2">
+                <span class="font-semibold">Abstract - </span> <%- paper.abstract %>
+              </div>
+              <div id="abstract" class="text-lg my-4">
+                <span class="font-semibold">Keywords - </span> <%- paper.keywords %>
+              </div>
+
+              <div class="w-full h-[90vh] relative bg-gray-400">
+                <iframe
+                  src="/uploads/papers/<%- paper.file_url %>"
+                  frameBorder="0"
+                  scrolling="auto"
+                  height="100%"
+                  width="100%"
+              ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+        <%- include('../partials/right-sidebar') %> 
+      </div>
+    </div>
+    <%- include('../partials/footer') %>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

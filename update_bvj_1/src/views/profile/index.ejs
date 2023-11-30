@@ -1,0 +1,138 @@
+<%- include('../partials/head') %>
+  <body class="bg-light">
+    <!-- This is success animation modal  -->
+    <div id="success" class="opacity-0 pointer-events-none fixed top-0 right-0 h-screen flex w-full justify-center items-center bg-black/40 z-50 transition-all duration-75 ease-in">
+    </div>
+    <!-- End of success animation modal  -->
+    <%- include('../partials/top-navbar') %> 
+    <div class="container-fluid pt-4 px-md-0 p-4">
+      <div class="row">
+        <%- include('../partials/left-sidebar') %> 
+        <div class="col-md-7 pb-4 text-justify d-flex align-items-center justify-content-center">
+          <div class="card rounded">
+            <div class="card-body rounded">
+              <h2 class="text-center pb-2 text-xl lg:text-3xl font-medium">Edit Profile Info</h2>
+              <hr class="w-50 mx-auto bgLightBlue" />
+              <form action="#">
+                <div class="form-group">
+                  <div class="form-group pt-3">
+                    <label for="name"><i class="fas fa-user"></i> Name* </label>
+                    <div class="w-full flex justify-between items-center gap-4">
+                      <input
+                        type="text"
+                        name="first_name"
+                        class="form-control"
+                        id="f_name"
+                        placeholder="First Name*"
+                        data-regFormInput
+                        value="<%- profile.first_name %>"
+                      />
+                      <input
+                        type="text"
+                        name="middle_name"
+                        class="form-control"
+                        id="m_name"
+                        placeholder="Middle Name"
+                        data-regFormInput
+                        value="<%- profile.middle_name %>"
+                      />
+                      <input
+                        type="text"
+                        name="last_name"
+                        class="form-control"
+                        id="l_name"
+                        placeholder="Last Name*"
+                        data-regFormInput
+                        value="<%- profile.last_name %>"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="email">
+                    <i class="fas fa-envelope"></i> Email*
+                  </label>
+                  <input type="text" value="<%- profile.email %>" name="email" class="form-control" id="email" required data-regFormInput />
+                </div>
+                <div class="form-group">
+                  <label for="mobile_no">
+                    <i class="fas fa-phone"></i> Mobile*
+                  </label>
+                  <input type="text" value="<%- profile.mobile_no %>" name="mobile_no" class="form-control" id="mobile_no" placeholder="Enter Mobile No" data-regFormInput />
+                </div>
+                <div class="form-group">
+                  <label for="affiliation">
+                    <i class="fas fa-school"></i> Affiliation*
+                  </label>
+                  <input type="text" value="<%- profile.affiliation %>" name="affiliation" class="form-control" id="affiliation" placeholder="Affiliation" data-regFormInput />
+                </div>
+                <div class="form-group">
+                  <label for="country">
+                    <i class="fas fa-flag"></i> Country*
+                  </label>
+                  <input type="text" value="<%- profile.country %>" name="country" class="form-control" id="country" placeholder="Country" data-regFormInput />
+                </div>
+                <div class="form-group">
+                  <label for="address">
+                    <i class="fas fa-location-dot"></i> Address*
+                  </label>
+                  <input type="text" value="<%- profile.address %>" name="address" class="form-control" id="address" placeholder="Enter Address" data-regFormInput />
+                </div>
+                <div class="form-group">
+                  <label for="website">
+                    <i class="fas fa-globe"></i> Website*
+                  </label>
+                  <input type="text" value="<%- profile.website %>" name="website" class="form-control" id="website" placeholder="Enter Website URL" data-regFormInput />
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                  <button id="regbtn" class="btn bg-primary text-white w-50 btn-hover"><div id="spinner" class="hidden spinner-border text-light h-5 w-5 mr-2" role="status"></div>Edit</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="card-body">
+              <div class="form-group">
+                <h2 class="text-center pb-2 text-xl lg:text-3xl font-medium">Change Password</h2>
+                <label for="password">
+                  <i class="fas fa-lock"></i> Old Password*
+                </label>
+                <input
+                  type="password"
+                  name="oldPass"
+                  class="form-control"
+                  id="password"
+                  required
+                  data-changePass
+                  placeholder="Enter Old Password*"
+                />
+              </div>
+              <div class="form-group">
+                <label for="password2">
+                  <i class="fas fa-lock"></i> New Password*
+                </label>
+                <input
+                  type="password"
+                  name="newPass"
+                  class="form-control"
+                  id="password2"
+                  required
+                  data-changePass
+                  placeholder="Enter New Password*"
+                />
+              </div>
+              <div class="form-group d-flex justify-content-center">
+                <button id="changePass" class="btn bg-primary text-white w-50 btn-hover"><div id="spinner2" class="hidden spinner-border text-light h-5 w-5 mr-2" role="status"></div>Change Password</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <%- include('../partials/right-sidebar') %> 
+      </div>
+    </div>
+    <%- include('../partials/footer') %>
+    <script src="/js/modules/profile/profile.script.js" type="module"></script>
+    <script src="/js/floating-success-menu.js" type="module"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,104 @@
+<%- include('../../partials/head') %>
+  <body class="bg-light">
+    <%- include('../../partials/top-navbar') %> 
+    <div class="container-fluid pt-4 px-md-0 p-4">
+      <div class="row">
+        <%- include('../partials/left-sidebar') %> 
+        <div class="col-md-7 text-justify">
+          <div class="card card-body">
+            <span class="h2 d-block pb-3"> Add Editorial </span>
+              <div class="tab-content" id="nav-tabContent">
+                <form action="" method="post" enctype="multipart/form-data">
+                  <div class="form-group">
+                    <label for="title"> Title* </label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="title"
+                      required
+                      placeholder="Title of editorial"
+                      data-formInput
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="abstract"> Description(Optional) </label>
+                    <textarea
+                      name="description"
+                      id="description"
+                      class="form-control"
+                      cols="30"
+                      rows="5"
+                      data-formInput
+                      placeholder="Enter Description"
+                    ></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="typeSelect"> Volume* </label>
+                    <select name="volume" class="custom-select mr-sm-2" id="typeSelect" data-formInput>
+                      <% volumes.forEach(item => { %>
+                        <option value="<%- item.id %>"><%- item.title %></option>
+                      <% }) %>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="typeSelect"> PDF File* </label>
+                    <input 
+                      type="file"
+                      class="form-control"
+                      name="file"
+                      required
+                    />
+                  </div>
+                  <div class="text-center pb-4" id="nextAuthors"> 
+                    <button
+                      class="btn btn-primary"
+                    >Save</button>
+                  </div>
+                </form>
+              </div>
+          </div>
+        </div>
+        <%- include('./right-sidebar') %> 
+      </div>
+    </div>
+
+
+    <!-- This is success animation modal  -->
+    <% if(!isError && msg.length > 0){ %>
+      <div id="success" class="opacity-100 pointer-events-none fixed top-0 right-0 h-screen flex w-full justify-center items-center bg-black/40 z-50 transition-all duration-75 ease-in">
+        <div class="relative bg-white border border-gray-300 rounded w-72 h-auto py-8 flex flex-col justify-center items-center">
+          <div class="success-checkmark">
+            <div class="check-icon">
+              <span class="icon-line line-tip"></span>
+              <span class="icon-line line-long"></span>
+              <div class="icon-circle"></div>
+              <div class="icon-fix"></div>
+            </div>
+          </div>
+          <div>
+            <span class="message"><%- msg %></span>
+          </div>
+        </div>
+      </div>
+      <script>
+        setTimeout(() => {
+          document.getElementById('success').classList.replace('opacity-100', 'opacity-0');
+        }, 2000);
+      </script>
+    <% } %>
+    <!-- End of success animation modal  -->
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

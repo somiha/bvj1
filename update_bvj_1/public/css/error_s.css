@@ -1,0 +1,231 @@
+.swal2-popup.swal2-toast .swal2-icon {
+  width: 2em;
+  min-width: 2em;
+  height: 2em;
+  margin: 0;
+}
+
+.swal2-popup.swal2-toast .swal2-icon-text {
+  font-size: 2em;
+  font-weight: 700;
+  line-height: 1em;
+}
+
+.swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring {
+  width: 2em;
+  height: 2em;
+}
+
+.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line] {
+  top: 0.875em;
+  width: 1.375em;
+}
+
+.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left] {
+  left: 0.3125em;
+}
+
+.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right] {
+  right: 0.3125em;
+}
+
+.swal2-icon {
+  position: relative;
+  justify-content: center;
+  width: 5em;
+  height: 5em;
+  margin: 1.25em auto 1.875em;
+  border: 0.25em solid transparent;
+  border-radius: 50%;
+  line-height: 5em;
+  cursor: default;
+  box-sizing: content-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  zoom: normal;
+}
+
+.swal2-icon-text {
+  font-size: 3.75em;
+}
+
+.swal2-icon.swal2-error {
+  border-color: #f27474;
+}
+
+.swal2-icon.swal2-error .swal2-x-mark {
+  position: relative;
+  flex-grow: 1;
+}
+
+.swal2-icon.swal2-error [class^=swal2-x-mark-line] {
+  display: block;
+  position: absolute;
+  top: 2.3125em;
+  width: 2.9375em;
+  height: 0.3125em;
+  border-radius: 0.125em;
+  background-color: #f27474;
+}
+
+.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left] {
+  left: 1.0625em;
+  transform: rotate(45deg);
+}
+
+.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right] {
+  right: 1em;
+  transform: rotate(-45deg);
+}
+
+.swal2-icon.swal2-warning {
+  border-color: #facea8;
+  color: #f8bb86;
+}
+
+.swal2-icon.swal2-info {
+  border-color: #9de0f6;
+  color: #3fc3ee;
+}
+
+.swal2-icon.swal2-question {
+  border-color: #c9dae1;
+  color: #87adbd;
+}
+
+.swal2-icon.swal2-success {
+  border-color: #a5dc86;
+}
+
+.swal2-icon.swal2-success [class^=swal2-success-circular-line] {
+  position: absolute;
+  width: 3.75em;
+  height: 7.5em;
+  transform: rotate(45deg);
+  border-radius: 50%;
+}
+
+.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=left] {
+  top: -0.4375em;
+  left: -2.0635em;
+  transform: rotate(-45deg);
+  transform-origin: 3.75em 3.75em;
+  border-radius: 7.5em 0 0 7.5em;
+}
+
+.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=right] {
+  top: -0.6875em;
+  left: 1.875em;
+  transform: rotate(-45deg);
+  transform-origin: 0 3.75em;
+  border-radius: 0 7.5em 7.5em 0;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+  position: absolute;
+  top: -0.25em;
+  left: -0.25em;
+  width: 100%;
+  height: 100%;
+  border: 0.25em solid rgba(165, 220, 134, 0.3);
+  border-radius: 50%;
+  z-index: 2;
+  box-sizing: content-box;
+}
+
+.swal2-icon.swal2-success .swal2-success-fix {
+  position: absolute;
+  top: 0.5em;
+  left: 1.625em;
+  width: 0.4375em;
+  height: 5.625em;
+  transform: rotate(-45deg);
+  z-index: 1;
+}
+
+.swal2-icon.swal2-success [class^=swal2-success-line] {
+  display: block;
+  position: absolute;
+  height: 0.3125em;
+  border-radius: 0.125em;
+  background-color: #a5dc86;
+  z-index: 2;
+}
+
+.swal2-icon.swal2-success [class^=swal2-success-line][class$=tip] {
+  top: 2.875em;
+  left: 0.875em;
+  width: 1.5625em;
+  transform: rotate(45deg);
+}
+
+.swal2-icon.swal2-success [class^=swal2-success-line][class$=long] {
+  top: 2.375em;
+  right: 0.5em;
+  width: 2.9375em;
+  transform: rotate(-45deg);
+}
+
+.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line] {
+  top: 0.875em;
+  width: 1.375em;
+}
+
+.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left] {
+  left: 0.3125em;
+}
+
+.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right] {
+  right: 0.3125em;
+}
+
+.swal2-icon.swal2-error {
+  border-color: #f27474;
+}
+
+.swal2-icon.swal2-error .swal2-x-mark {
+  position: relative;
+  flex-grow: 1;
+}
+
+.swal2-icon.swal2-error [class^=swal2-x-mark-line] {
+  display: block;
+  position: absolute;
+  top: 2.3125em;
+  width: 2.9375em;
+  height: 0.3125em;
+  border-radius: 0.125em;
+  background-color: #f27474;
+}
+
+.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left] {
+  left: 1.0625em;
+  transform: rotate(45deg);
+}
+
+.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right] {
+  right: 1em;
+  transform: rotate(-45deg);
+}
+@keyframes swal2-animate-error-icon {
+  0% {
+    transform: rotateX(100deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateX(0);
+    opacity: 1;
+  }
+}
+.swal2-animate-error-icon {
+  animation: swal2-animate-error-icon 0.5s;
+}
+
+.swal2-animate-error-icon .swal2-x-mark {
+  animation: swal2-animate-error-x-mark 0.5s;
+}
+
+.error-message {
+  color: #f27474;
+}/*# sourceMappingURL=error_s.css.map */

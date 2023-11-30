@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn-hover {
+    @apply transition-all duration-150 ease-in;
+  }
+  .btn-hover:hover {
+    @apply brightness-95;
+  }
+}

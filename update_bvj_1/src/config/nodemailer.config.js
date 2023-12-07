@@ -36,7 +36,7 @@ const oauth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 function send_welcome_mail(name, recipient) {
-  const accessToken = OAuth2Client.getAccessToken();
+  const accessToken = oauth2Client.getAccessToken();
   const mailOptions = {
     from: `Bangladesh Veterinary Journal <${process.env.SENDER_MAIL}>`,
     to: recipient,
@@ -73,7 +73,7 @@ function send_welcome_mail(name, recipient) {
 
 // this will send a mail with a code of recovery token to the requested email
 function send_recovery_mail(name, token, recipient) {
-  const accessToken = OAuth2Client.getAccessToken();
+  const accessToken = oauth2Client.getAccessToken();
   const mailOptions = {
     from: `Bangladesh Veterinary Journal <${process.env.SENDER_MAIL}>`,
     to: recipient,
@@ -303,7 +303,7 @@ async function reviewer_mail(name, reviewer_id, recipient) {
 }
 
 function reviewer_welcome_mail(name, recipient, password) {
-  const accessToken = OAuth2Client.getAccessToken();
+  const accessToken = oauth2Client.getAccessToken();
   const mailOptions = {
     from: `Bangladesh Veterinary Journal <${process.env.SENDER_MAIL}>`,
     to: recipient,
@@ -315,7 +315,7 @@ function reviewer_welcome_mail(name, recipient, password) {
 		<p>Password: ${password}</p>
 		Please click on the link to login to your account <br />
 		<div style="display:flex; width: 100%; justify-content: center; align-items: center">
-			<a style="background-color: #1449bb; padding: 10px; margin: 10px; color: #e1e1e1; border-radius: 5px; text-decoration: none" href="${process.env.BASE_URL}/login">Go to link</a>
+			<a style="background-color: #1449bb; padding: 10px; margin: 10px; color: #e1e1e1; border-radius: 5px; text-decoration: none" href="${process.env.BASE_URL}/reviewer_panel/login">Go to link</a>
 		</div>
 		<br />
 		Best regards,<br />
@@ -348,7 +348,7 @@ async function author_paper_update(paper_id, isError, notification) {
   const userInfo = await readData(select_query);
   const recipient = userInfo[0].email;
   const counts = await trackStateCounter(userInfo[0].id);
-  const accessToken = OAuth2Client.getAccessToken();
+  const accessToken = oauth2Client.getAccessToken();
   const mailOptions = {
     from: `Bangladesh Veterinary Journal <${process.env.SENDER_MAIL}>`,
     to: recipient,
